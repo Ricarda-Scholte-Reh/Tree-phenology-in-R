@@ -46,12 +46,51 @@ Useful links for coding:\
 
 # Tree dormancy
 
+## Learning goals
+
+## Introduction into dormancy
+
+## Experimental and statistical determination of the chilling and forcing periods
+
+## Phenology record and BBCH scale
+
+## **Exercises**
+
+1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
+
+2. Which are the advantages (name 2) of the BBCH scale compared with earlies scales?\
+
+3. Classify the following phenological stages of sweet cherry according to the BBCH scale:\
+
+![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png)\
+
 # Climate change and impact projection
+
+## The drivers of climate change
+
+## What we've already seen
+
+## Future scenarios
+
+## Impact projection approaches
+
+## **Exercises**
+
+1. List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
+
+2. Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
+
+3. What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
+
+4. Briefly describe the 4 climate impact projection methods described in the fourth video.\
 
 beide kapitel lesen\
 Fragen beantworten\
 logbuch hochladen\
-github plugin für rstudio zum laufen bringen
+
+
+
+
 
 
 
