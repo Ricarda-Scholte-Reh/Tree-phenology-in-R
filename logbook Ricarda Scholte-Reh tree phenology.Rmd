@@ -66,9 +66,11 @@ Dormancy phases\
 \* Eco-dormancy\
 \* Growth resumption\
 
-Environmental signals \* Influence of different latitude to mean temperatures
+Environmental signals\
+\* Influence of different latitude to mean temperatures\
 
-Physiological processes that regulate dormancy \* Transport\
+Physiological processes that regulate dormancy\
+\* Transport\
 \* Phytohormones\
 \* Genetics\
 \* Carbohydrates\
@@ -77,18 +79,16 @@ Physiological processes that regulate dormancy \* Transport\
 
 ## Experimental and statistical determination of the chilling and forcing periods
 
-![Establishing phases of dormancy](https://github.com/Ricarda-Scholte-Reh/Tree-phenology-in-R/blob/main/Pictures%20for%20logbook/Establishing%20phases%20of%20dormancy.png?raw=true)
-
 ## Phenology record and BBCH scale
 
 ## **Exercises**
 
 1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
 
--   Answer1\
--   Answer2\
+\* Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
 
 2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
+\* 
 
 3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
 
