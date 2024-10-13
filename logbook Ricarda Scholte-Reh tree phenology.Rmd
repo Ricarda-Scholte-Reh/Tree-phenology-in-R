@@ -48,9 +48,36 @@ Useful links for coding:\
 
 ## Learning goals
 
+-   Learn about dormancy in temperate fruit trees\
+-   Be able to identify the phenological stages of a fruit tree and understand phenology data sets\
+-   Describe and compare the two methodologies (empirical and statistical) to identify the chilling and forcing periods of a certain cultivar\
+
 ## Introduction into dormancy
 
+Definition dormancy\
+\*
+
+Definition phenology\
+\*
+
+Dormancy phases\
+\* Dormancy establishment\
+\* Endo-dormancy\
+\* Eco-dormancy\
+\* Growth resumption\
+
+Environmental signals \* Influence of different latitude to mean temperatures
+
+Physiological processes that regulate dormancy \* Transport\
+\* Phytohormones\
+\* Genetics\
+\* Carbohydrates\
+
+## Dormancy physiology
+
 ## Experimental and statistical determination of the chilling and forcing periods
+
+![Establishing phases of dormancy](https://github.com/Ricarda-Scholte-Reh/Tree-phenology-in-R/blob/main/Pictures%20for%20logbook/Establishing%20phases%20of%20dormancy.png?raw=true)
 
 ## Phenology record and BBCH scale
 
@@ -58,9 +85,12 @@ Useful links for coding:\
 
 1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
 
-2. Which are the advantages (name 2) of the BBCH scale compared with earlies scales?\
+-   Answer1\
+-   Answer2\
 
-3. Classify the following phenological stages of sweet cherry according to the BBCH scale:\
+2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
+
+3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
 
 ![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png)\
 
@@ -76,36 +106,14 @@ Useful links for coding:\
 
 ## **Exercises**
 
-1. List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
+1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
 
-2. Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
+2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
 
-3. What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
+3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
 
-4. Briefly describe the 4 climate impact projection methods described in the fourth video.\
+4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
 
 beide kapitel lesen\
 Fragen beantworten\
 logbuch hochladen\
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
