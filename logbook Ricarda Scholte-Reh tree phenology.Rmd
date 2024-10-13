@@ -1,0 +1,72 @@
+---
+title: "Tree phenology analysis with R"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: true
+---
+
+# Introduction
+
+Content of this module\
+- Overview of methods to study the impact of climate, and it's change, on tree phenology\
+- Basics about tree phenology (esp. dormancy)\
+- How to use the chillR package for R - Impact that climate change has to projection models\
+- Appreciation for the importance of risks and uncertainty in climate change projection\
+- Understanding of how to use some staple tools of R code development\
+- Ability to use chillR functions for climate change impact projection\
+- Ability to use chillR functions for tree phenology analysis\
+- Understanding and ability to use the PhenoFlex dormancy analysis framework\
+
+Requirements for rewarding credits\
+- NO exam\
+- Participation in the course will be graded\
+- submit a "learning logbook" at the end of the semester made with Rmarkdown\
+- you will record all learning and coding work\
+- the logbook will be also controlled during the semester\
+
+# The tools we use
+
+## R and RStudio
+
+## git and github
+
+## Rmarkdown
+
+Useful links for coding:\
+[different themes for Rmarkdown](https://bootswatch.com/3/)\
+[Chapter3 for basics](https://bookdown.org/yihui/rmarkdown/html-document.html)\
+[cheat sheet](https://rmarkdown.rstudio.com/lesson-15.HTML)\
+[basic code blocks](https://rmarkdown.rstudio.com/authoring_basics.html)\
+
+# Tree dormancy
+
+# Climate change and impact projection
+
+beide kapitel lesen\
+Fragen beantworten\
+logbuch hochladen\
+github plugin für rstudio zum laufen bringen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
