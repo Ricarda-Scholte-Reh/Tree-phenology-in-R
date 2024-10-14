@@ -81,16 +81,44 @@ Physiological processes that regulate dormancy\
 
 ## Phenology record and BBCH scale
 
+What is phenology?\
+Phenology is the study of periodic events in biological life cycels and how these are influenced by seasonal and interannual variations in climate.\
+For example, the changes of a tree through the year and how the change in it's appearance is influenced by biotic (e.g. neigbour plants, insects, birds) and abiotic (for us most important the changing temperature) factors.\
+\
+Where does the term come from?\
+Often are cultural festivals connected to natural happenings, e.g. the blossom of cherries is very important for the Japanese culture.\
+Charles Morin\
+Botanist who worked on plant phenomena and made great use of the terms "periodical phenomena" and " anthrochronology". He also was the first who used the term phenology. He defined it with the following words: "This is a particular science having the goal to understand the manifestations of life governed by time, it is called phenology.".\
+Phenology and climate change\
+Phenology is very sensitive to eveen small changes.\
+pause at 3:42 in the video\
+\
+Phenology in agriculture\
+\* Importance and uses\
+\* Fruit trees: traditional phenological scales\
+BBCH-scale\
+
 ## **Exercises**
 
 1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
-
-\* Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
+    + Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
 
 2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
-\* 
-
+    -   Growth stages are easily recognizable under field conditions.\
+    -   Growth stages are graded in the order of apperance.
 3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
+    The pictures are described from left to right.\
+    All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.\
+
+-   picture 1: BBCH-stage 57\
+    -   Main stage: 50, reproductive development or influence emergence\
+    -   stage 57: Sepals open (59 would be ballooning, but the petals are too compact for this stage)\
+-   picture 2: BBCH-stage 65\
+    -   Main stage 60: Flowering\
+    -   stage 65: Full flowering, at least 50 % of the flowers are open, the first petals are already falling.\
+-   picture 3: BBCH-stage: 86\
+    -   Main stage 80: ripening or maturity\
+    + stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).\
 
 ![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png)\
 
@@ -113,7 +141,3 @@ Physiological processes that regulate dormancy\
 3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
 
 4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
-
-beide kapitel lesen\
-Fragen beantworten\
-logbuch hochladen\
