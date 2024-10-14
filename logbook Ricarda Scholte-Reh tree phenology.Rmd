@@ -107,8 +107,7 @@ BBCH-scale\
     -   Growth stages are easily recognizable under field conditions.\
     -   Growth stages are graded in the order of apperance.
 3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
-    The pictures are described from left to right.\
-    All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.\
+    The pictures are described from left to right. All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.\
 
 -   picture 1: BBCH-stage 57\
     -   Main stage: 50, reproductive development or influence emergence\
@@ -135,9 +134,99 @@ BBCH-scale\
 ## **Exercises**
 
 1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
+* Sun
+  + Warms Earth through solar radiation
+  + Activity varies slightly (cyclically) over time, as evidenced by sunspots
+  + Differences in energy that reaches  Earth are small
+  + Explains only a small fraction of current climate variability
+  + Important driver of climate change on geological timescales, but not of recent climate change
+* Aerosols
+  + Suspensions of liquid, solid, or mixed particles with highly variable chemical composition and size distribution
+  + Natural sources: Sea salt, dust, volcanic eruptions, fires
+  + Anthropogenic sources: combustion processes (e.g. power plants, cars, fires and cook stoves)
+  + Generally have a cooling effect on the climate, especially locally
+  + Human aerosol emissions are a major climate driver in some places
+  + Global aerosol distribution – fraction of Aerosol Optical Depth related to human emissions
+  + Major climate driver in industrial centers
+* Clouds
+  + Can have both cooling and warming effects
+  + Net effect likely important but poorly understood
+  + Positive feedback with warming possible: warmer -> more clouds -> warmer -> more evaporation -> more clouds
+* Ozone
+  + Surface (tropospheric) ozone: constituent of smog, health hazard (bad ozone)
+  + Stratospheric ozone (10-35 km above surface): shields Earth from UV-B radiation (good ozone)
+  + Greenhouse gas: presence in the stratosphere has a warming effect
+  + Destroyed by chlorofluorocarbons (CFCs)
+* Surface albedo
+  + Reflection of radiation by the land surface
+  + Light surfaces (e.g. ice, snow) reflect almost all radiation, dark surfaces (ocean, dark soil, forest) very little
+  + Land cover change can affect albedo
+* Greenhouse gases
+  + Atmospheric gases that trap heat on Earth
+  + Can absorb only radiation of certain wavelengths
+  + Short-wave radiation from the sun passes
+  + Long-wave radiation from Earth surface is absorbed
+  + Greenhouse effects warms the planet
+* Long-term drivers
+  + Trends in solar activity
+    + Star life cycle, gradually decreasing luminosity over billions of years
+  + Ocean currents/continent constellations
+    + Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+  + Plants vs. animals (hypothetical)
+    + Balance of CO2 production and consumption
+    + Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+  + Volcanic and meteorite activity
+    + Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+    + Meteorite impacts can raise dust concentrations for years
+  + Trends in solar activity
+    + Star life cycle, gradually decreasing luminosity over billions of years
+  + Ocean currents/continent constellations
+    + Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+  + Plants vs. animals (hypothetical)
+    + Balance of CO2 production and consumption
+    + Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+  + Volcanic and meteorite activity
+    + Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+    + Meteorite impacts can raise dust concentrations for years
+  + Milankovic cycles
+    + Variation in Earth’s orbit: eccentricity, axial tilt and precession (19,000 to 400,000-year cycles)
+    + Most likely cause of Ice Ages
 
 2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
+  + Recently the mean temperatures are globally rising clearly
+  + Especially in the last 50 to 100 years 
+
 
 3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
 
 4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
