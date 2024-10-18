@@ -193,14 +193,25 @@ BBCH-scale\
     + Most likely cause of Ice Ages
 
 2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
-  + Recently the mean temperatures are globally rising clearly
+  + Recently the mean temperatures are globally rising clearly and very drastically
   + Especially in the last 50 to 100 years 
+  + this an other facors have a great influence in our climate and weather (regional and global)
+  + we will and already do experience more extreme weather (like more dry periods, extreme rain, mild and extreme winter)
+  + most important is the rapid warming (as conclusion)
 
 
 3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
+  + RCP -> Representative Concentration Pathways
+  + RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
+  + the different scenarios are labeled after the possible radiative forcing values in the year 2100
+  + 
+
 
 4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
-
+  + statistical models
+  + species distribution modeling
+  + process-based models
+  + climate analouge analysis
 
 
 
