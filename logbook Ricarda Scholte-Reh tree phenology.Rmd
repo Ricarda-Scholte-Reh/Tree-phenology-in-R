@@ -101,8 +101,7 @@ BBCH-scale\
 ## **Exercises**
 
 1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
-    + Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
-
+    -   Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
 2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
     -   Growth stages are easily recognizable under field conditions.\
     -   Growth stages are graded in the order of apperance.
@@ -117,9 +116,9 @@ BBCH-scale\
     -   stage 65: Full flowering, at least 50 % of the flowers are open, the first petals are already falling.\
 -   picture 3: BBCH-stage: 86\
     -   Main stage 80: ripening or maturity\
-    + stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).\
+    -   stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).\
 
-![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png)\
+![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png) Picture 01: Phenological stages of a cherry tree\
 
 # Climate change and impact projection
 
@@ -134,110 +133,83 @@ BBCH-scale\
 ## **Exercises**
 
 1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
-* Sun
-  + Warms Earth through solar radiation
-  + Activity varies slightly (cyclically) over time, as evidenced by sunspots
-  + Differences in energy that reaches  Earth are small
-  + Explains only a small fraction of current climate variability
-  + Important driver of climate change on geological timescales, but not of recent climate change
-* Aerosols
-  + Suspensions of liquid, solid, or mixed particles with highly variable chemical composition and size distribution
-  + Natural sources: Sea salt, dust, volcanic eruptions, fires
-  + Anthropogenic sources: combustion processes (e.g. power plants, cars, fires and cook stoves)
-  + Generally have a cooling effect on the climate, especially locally
-  + Human aerosol emissions are a major climate driver in some places
-  + Global aerosol distribution – fraction of Aerosol Optical Depth related to human emissions
-  + Major climate driver in industrial centers
-* Clouds
-  + Can have both cooling and warming effects
-  + Net effect likely important but poorly understood
-  + Positive feedback with warming possible: warmer -> more clouds -> warmer -> more evaporation -> more clouds
-* Ozone
-  + Surface (tropospheric) ozone: constituent of smog, health hazard (bad ozone)
-  + Stratospheric ozone (10-35 km above surface): shields Earth from UV-B radiation (good ozone)
-  + Greenhouse gas: presence in the stratosphere has a warming effect
-  + Destroyed by chlorofluorocarbons (CFCs)
-* Surface albedo
-  + Reflection of radiation by the land surface
-  + Light surfaces (e.g. ice, snow) reflect almost all radiation, dark surfaces (ocean, dark soil, forest) very little
-  + Land cover change can affect albedo
-* Greenhouse gases
-  + Atmospheric gases that trap heat on Earth
-  + Can absorb only radiation of certain wavelengths
-  + Short-wave radiation from the sun passes
-  + Long-wave radiation from Earth surface is absorbed
-  + Greenhouse effects warms the planet
-* Long-term drivers
-  + Trends in solar activity
-    + Star life cycle, gradually decreasing luminosity over billions of years
-  + Ocean currents/continent constellations
-    + Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
-  + Plants vs. animals (hypothetical)
-    + Balance of CO2 production and consumption
-    + Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
-  + Volcanic and meteorite activity
-    + Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
-    + Meteorite impacts can raise dust concentrations for years
-  + Trends in solar activity
-    + Star life cycle, gradually decreasing luminosity over billions of years
-  + Ocean currents/continent constellations
-    + Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
-  + Plants vs. animals (hypothetical)
-    + Balance of CO2 production and consumption
-    + Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
-  + Volcanic and meteorite activity
-    + Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
-    + Meteorite impacts can raise dust concentrations for years
-  + Milankovic cycles
-    + Variation in Earth’s orbit: eccentricity, axial tilt and precession (19,000 to 400,000-year cycles)
-    + Most likely cause of Ice Ages
+
+-   Sun
+    -   Warms Earth through solar radiation
+    -   Activity varies slightly (cyclically) over time, as evidenced by sunspots
+    -   Differences in energy that reaches Earth are small
+    -   Explains only a small fraction of current climate variability
+    -   Important driver of climate change on geological timescales, but not of recent climate change
+-   Aerosols
+    -   Suspensions of liquid, solid, or mixed particles with highly variable chemical composition and size distribution
+    -   Natural sources: Sea salt, dust, volcanic eruptions, fires
+    -   Anthropogenic sources: combustion processes (e.g. power plants, cars, fires and cook stoves)
+    -   Generally have a cooling effect on the climate, especially locally
+    -   Human aerosol emissions are a major climate driver in some places
+    -   Global aerosol distribution – fraction of Aerosol Optical Depth related to human emissions
+    -   Major climate driver in industrial centers
+-   Clouds
+    -   Can have both cooling and warming effects
+    -   Net effect likely important but poorly understood
+    -   Positive feedback with warming possible: warmer -\> more clouds -\> warmer -\> more evaporation -\> more clouds
+-   Ozone
+    -   Surface (tropospheric) ozone: constituent of smog, health hazard (bad ozone)
+    -   Stratospheric ozone (10-35 km above surface): shields Earth from UV-B radiation (good ozone)
+    -   Greenhouse gas: presence in the stratosphere has a warming effect
+    -   Destroyed by chlorofluorocarbons (CFCs)
+-   Surface albedo
+    -   Reflection of radiation by the land surface
+    -   Light surfaces (e.g. ice, snow) reflect almost all radiation, dark surfaces (ocean, dark soil, forest) very little
+    -   Land cover change can affect albedo
+-   Greenhouse gases
+    -   Atmospheric gases that trap heat on Earth
+    -   Can absorb only radiation of certain wavelengths
+    -   Short-wave radiation from the sun passes
+    -   Long-wave radiation from Earth surface is absorbed
+    -   Greenhouse effects warms the planet
+-   Long-term drivers
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Milankovic cycles
+        -   Variation in Earth’s orbit: eccentricity, axial tilt and precession (19,000 to 400,000-year cycles)
+        -   Most likely cause of Ice Ages
 
 2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
-  + Recently the mean temperatures are globally rising clearly and very drastically
-  + Especially in the last 50 to 100 years 
-  + this an other facors have a great influence in our climate and weather (regional and global)
-  + we will and already do experience more extreme weather (like more dry periods, extreme rain, mild and extreme winter)
-  + most important is the rapid warming (as conclusion)
 
+-   Recently the mean temperatures are globally rising clearly and very drastically
+-   Especially in the last 50 to 100 years
+-   this an other facors have a great influence in our climate and weather (regional and global)
+-   we will and already do experience more extreme weather (like more dry periods, extreme rain, mild and extreme winter)
+-   most important is the rapid warming (as conclusion)
 
 3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
-  + RCP -> Representative Concentration Pathways
-  + RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
-  + the different scenarios are labeled after the possible radiative forcing values in the year 2100
-  + 
 
+-   RCP -\> Representative Concentration Pathways
+-   RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
+-   the different scenarios are labeled after the possible radiative forcing values in the year 2100
+-   
 
 4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
-  + statistical models
-  + species distribution modeling
-  + process-based models
-  + climate analouge analysis
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-   statistical models
+-   species distribution modeling
+-   process-based models
+-   climate analouge analysis
