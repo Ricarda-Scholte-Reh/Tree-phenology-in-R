@@ -2,7 +2,7 @@
 title: "Tree phenology analysis with R"
 author: "Ricarda Scholte-Reh"
 date: "2024-10-12"
-homepage: "https://github.com/Ricarda-Scholte-Reh/Tree-phenology-in-R"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
 output:
   html_document:
     theme: flatly
