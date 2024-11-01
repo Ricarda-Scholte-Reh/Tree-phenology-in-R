@@ -27,23 +27,21 @@ Content of this module\
 Requirements for rewarding credits\
 - NO exam\
 - Participation in the course will be graded\
-- submit a "learning logbook" at the end of the semester made with Rmarkdown\
-- you will record all learning and coding work\
-- the logbook will be also controlled during the semester\
+- Submit a "learning logbook" at the end of the semester made with Rmarkdown\
+- You will record all learning and coding work\
+- The logbook will be also controlled during the semester\
 
 # The tools we use
 
-## R and RStudio
-
-## git and github
-
-## Rmarkdown
+-   R and RStudio\
+-   git and github\
+-   Rmarkdown\
 
 Useful links for coding:\
-[different themes for Rmarkdown](https://bootswatch.com/3/)\
-[Chapter3 for basics](https://bookdown.org/yihui/rmarkdown/html-document.html)\
-[cheat sheet](https://rmarkdown.rstudio.com/lesson-15.HTML)\
-[basic code blocks](https://rmarkdown.rstudio.com/authoring_basics.html)\
+- [different themes for Rmarkdown](https://bootswatch.com/3/)\
+- [Chapter3 for basics](https://bookdown.org/yihui/rmarkdown/html-document.html)\
+- [cheat sheet](https://rmarkdown.rstudio.com/lesson-15.HTML)\
+- [basic code blocks](https://rmarkdown.rstudio.com/authoring_basics.html)\
 
 # Tree dormancy
 
@@ -55,26 +53,57 @@ Useful links for coding:\
 
 ## Introduction into dormancy
 
-Definition dormancy\
-\*
-
 Definition phenology\
-\*
+- The study of natural phenomena that recur periodically in plants and animals\
+- It also studies the relationship of these phenomena to seasonal changes ans climates\
+- More simply spoken is phenology the study of annual sequence of plant development\
+[Source: ScienceDirect Topics](https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/phenology)\
 
-Dormancy phases\
-\* Dormancy establishment\
-\* Endo-dormancy\
-\* Eco-dormancy\
-\* Growth resumption\
-
-Environmental signals\
-\* Influence of different latitude to mean temperatures\
+Definition dormancy\
+- The stage in which a plant is alive but not actively growing\
+- Is important to survive unfavorable conditions like freezing (mainly in winter)\
+- To end the first stage of dormancy a certain amount of cool temperature is required.\
+- 4 phases\
+- Dormancy establishment\
+- The tree stops growing and it's leaf fall in autumn\
+- Is mostly regulated by temperature and photoperiod\
+- The photoperiod varies depending on the latitude which also influences it's importance\
+- Endo-dormancy\
+- Controlled by plant endogenous factors\
+- In this stage is the tree not able to grow (even if the environment has perfect conditions)\
+- A certain time of chilling is required to overcome this stage.\
+- As soon as the plant did overcome this stage it is able again to respond to growth promoting environmental signals\
+- Eco-dormancy\
+- In this stage the dormance is already broken, but the plant does not start to grow right away\
+- The bats do have now the capacity to grow and are still able to resist freezing temperatures but on the "outside" nothing happens.\
+- The reason that nothing happens are not unsuitable environmental conditions for growing\
+- In this stage is the temperature the most important factor\
+- Growth resumption\
+- Here are the first changes optically observable\
+- The begin of this stage depends heavily on the species and cultivar\
+- Now are the buds more sensitive to freezing temperatures\
+- Inside of the buds does now begin the development of the reproductive organs\
 
 Physiological processes that regulate dormancy\
-\* Transport\
-\* Phytohormones\
-\* Genetics\
-\* Carbohydrates\
+Dormancy is the result of complex interactions between numerous physiological processes that occurs in different parts of the tree (e.g. buds, meristems and vascular tissue).\
+- Transport\
+- During dormancy does the transport of water and nutrients stops in the whole plant but also at cellular level\
+- Phytohormones\
+- Are long distance signaling compounds acting in very long concentrations\
+- They regulate plant-growth and development\
+- They mediate responses to biotic and abiotic stressors\
+- Genetics\
+- The length and requirements for dormancy are also linked to certain "dormancy-associated mudbox" genes\
+- This group of genes was identified and related to dormancy thanks to the ever-growing pits mutant (a mutant that did grow all around the year)\
+- Recently transcriptomic studies have shown global changes in expression patterns of genes associated with a broad range of structural and physiological functions during dormancy progression\
+- Carbohydrates\
+- Nanostructural carbohydrate dynamics has a family assigned critical roles in tree dormancy. Trees exhibit a strong fluctuation between dormance stages in a rate at which soluble sugars and starch are synthetzied and degraded\
+- Nanostructural carbohydrates have three main functions\
+- energy esterates\
+- transport and supply\
+- osmotic regulation and signaling\
+- These functions clearly varied within and between seasons\
+[Source: Video"Introduction to dormancy"](https://www.youtube.com/watch?v=qh9AZDmOm3o)
 
 ## Dormancy physiology
 
@@ -95,11 +124,11 @@ Phenology is very sensitive to eveen small changes.\
 pause at 3:42 in the video\
 \
 Phenology in agriculture\
-\* Importance and uses\
-\* Fruit trees: traditional phenological scales\
+- Importance and uses\
+- Fruit trees: traditional phenological scales\
 BBCH-scale\
 
-## **Exercises**
+## Exercises
 
 1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
     -   Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
@@ -131,7 +160,7 @@ BBCH-scale\
 
 ## Impact projection approaches
 
-## **Exercises**
+## Exercises
 
 1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
 
@@ -206,7 +235,6 @@ BBCH-scale\
 -   RCP -\> Representative Concentration Pathways
 -   RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
 -   the different scenarios are labeled after the possible radiative forcing values in the year 2100
--   
 
 4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
 
@@ -214,3 +242,41 @@ BBCH-scale\
 -   species distribution modeling
 -   process-based models
 -   climate analouge analysis
+
+# Winter chill projections
+
+## Some interesting knowlege
+
+## Exercises
+
+1.  Sketch out three data access and processing challenges that had to be overcome in order to produce chill projections with state-of-the-art methodology.\
+    -   three ways to view data
+    -   difficulties with processing
+
+    - Chilling Hours Model
+      - not a good model
+      - especially for warm climates not trustable
+      - 
+    
+2.  Outline, in your understanding, the basic steps that are necessary to make such projections.\
+    -   Steps needed for todays projections
+    -   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
