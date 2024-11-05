@@ -263,7 +263,64 @@ BBCH-scale\
     -   
 
 
+# Manual chill analysis
 
+## Computing Chilling Hours from temperature data
+
+## Our first chill function
+
+## Exercises
+1. Write a basic function that calculates warm hours (>25° C).
+```{r echo = True, results = "hide"}
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+```
+
+
+```{r}
+warm_hours <- function(THourly, 
+                        startYear,
+                        startMonth,
+                        startDay,                   
+                        startHour,
+                        endYear,
+                        endMonth,
+                        endDay,                   
+                        endHour)
+
+{THourly[,"Warm_Hour"] <- THourly$Temp > 25
+  Start_row <- which(hourtemps$Year == startYear &
+                     hourtemps$Month == startMonth &
+                     hourtemps$Day == startDay &
+                     hourtemps$Hour == startHour)
+
+  End_row <- which(hourtemps$Year == endYear &
+                   hourtemps$Month == endMonth &
+                   hourtemps$Day == endDay &
+                   hourtemps$Hour == endHour)
+
+  WHs <- sum(THourly$Chilling_Hour[Start_row:End_row])
+return(WHs)}
+```
+
+
+
+2. Apply this function to the Winters_hours_gaps dataset
+```{r}
+hourtemps <- Winters_hours_gaps
+summary(hourtemps)
+
+warm_hours(hourtemps, 2008, 7, 1, 0,
+                           2008, 9, 30, 0)
+```
+
+
+3. Extend this function, so that it can take start and end dates as inputs and sums up warm hours between these dates.
+```{r}
+
+```
 
 
 
