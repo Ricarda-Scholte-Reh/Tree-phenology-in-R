@@ -1,0 +1,54 @@
+---
+title: "Tree phenology Notizen"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-22"
+output: html_document
+---
+
+# 22.10.2024 Chapter 06
+
+
+```{r}
+
+4 > 0
+4 < 7.5
+4 == 5
+4 >= 5
+
+b <- 5
+b > 0
+
+c <- c(-1, 0, 1, 7, 8, 10)
+
+c > 0
+```
+
+
+```{r}
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+
+hourtemps <- Winters_hours_gaps
+summary(hourtemps)
+
+#hourtemps[1, 1]
+#hourtemps[,1]
+#hourtemps[1, "Temp"]
+#hourtemps$Hour[5]
+
+a <- c(1:6)
+hourtemps <- Winters_hours_gaps[, c("Year", "Month", "Day", "Hour", "Temp")]
+
+# hourtemps$Temp > 10
+
+hourtemps[, "Chilling_Hour"] <- hourtemps$Temp > 10
+summary(hourtemps)
+
+hourtemps[, "Chilling_Hour"] <- hourtemps$Temp > 0 & hourtemps$Temp <= 7.2
+hourtemps
+```
+
+
+

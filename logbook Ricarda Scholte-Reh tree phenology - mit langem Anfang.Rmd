@@ -1,0 +1,321 @@
+---
+title: "Tree phenology analysis with R"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Introduction
+
+Content of this module\
+- Overview of methods to study the impact of climate, and it's change, on tree phenology\
+- Basics about tree phenology (esp. dormancy)\
+- How to use the chillR package for R - Impact that climate change has to projection models\
+- Appreciation for the importance of risks and uncertainty in climate change projection\
+- Understanding of how to use some staple tools of R code development\
+- Ability to use chillR functions for climate change impact projection\
+- Ability to use chillR functions for tree phenology analysis\
+- Understanding and ability to use the PhenoFlex dormancy analysis framework\
+
+Requirements for rewarding credits\
+- NO exam\
+- Participation in the course will be graded\
+- Submit a "learning logbook" at the end of the semester made with Rmarkdown\
+- You will record all learning and coding work\
+- The logbook will be also controlled during the semester\
+
+# The tools we use
+
+-   R and RStudio\
+-   git and github\
+-   Rmarkdown\
+
+Useful links for coding:\
+- [different themes for Rmarkdown](https://bootswatch.com/3/)\
+- [Chapter3 for basics](https://bookdown.org/yihui/rmarkdown/html-document.html)\
+- [cheat sheet](https://rmarkdown.rstudio.com/lesson-15.HTML)\
+- [basic code blocks](https://rmarkdown.rstudio.com/authoring_basics.html)\
+
+# Tree dormancy
+
+## Learning goals
+
+-   Learn about dormancy in temperate fruit trees\
+-   Be able to identify the phenological stages of a fruit tree and understand phenology data sets\
+-   Describe and compare the two methodologies (empirical and statistical) to identify the chilling and forcing periods of a certain cultivar\
+
+## Introduction into dormancy
+
+Definition phenology\
+- The study of natural phenomena that recur periodically in plants and animals\
+- It also studies the relationship of these phenomena to seasonal changes ans climates\
+- More simply spoken is phenology the study of annual sequence of plant development\
+[Source: ScienceDirect Topics](https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/phenology)\
+
+Definition dormancy\
+- The stage in which a plant is alive but not actively growing\
+- Is important to survive unfavorable conditions like freezing (mainly in winter)\
+- To end the first stage of dormancy a certain amount of cool temperature is required.\
+- 4 phases\
+- Dormancy establishment\
+- The tree stops growing and it's leaf fall in autumn\
+- Is mostly regulated by temperature and photoperiod\
+- The photoperiod varies depending on the latitude which also influences it's importance\
+- Endo-dormancy\
+- Controlled by plant endogenous factors\
+- In this stage is the tree not able to grow (even if the environment has perfect conditions)\
+- A certain time of chilling is required to overcome this stage.\
+- As soon as the plant did overcome this stage it is able again to respond to growth promoting environmental signals\
+- Eco-dormancy\
+- In this stage the dormance is already broken, but the plant does not start to grow right away\
+- The bats do have now the capacity to grow and are still able to resist freezing temperatures but on the "outside" nothing happens.\
+- The reason that nothing happens are not unsuitable environmental conditions for growing\
+- In this stage is the temperature the most important factor\
+- Growth resumption\
+- Here are the first changes optically observable\
+- The begin of this stage depends heavily on the species and cultivar\
+- Now are the buds more sensitive to freezing temperatures\
+- Inside of the buds does now begin the development of the reproductive organs\
+
+Physiological processes that regulate dormancy\
+Dormancy is the result of complex interactions between numerous physiological processes that occurs in different parts of the tree (e.g. buds, meristems and vascular tissue).\
+- Transport\
+- During dormancy does the transport of water and nutrients stops in the whole plant but also at cellular level\
+- Phytohormones\
+- Are long distance signaling compounds acting in very long concentrations\
+- They regulate plant-growth and development\
+- They mediate responses to biotic and abiotic stressors\
+- Genetics\
+- The length and requirements for dormancy are also linked to certain "dormancy-associated mudbox" genes\
+- This group of genes was identified and related to dormancy thanks to the ever-growing pits mutant (a mutant that did grow all around the year)\
+- Recently transcriptomic studies have shown global changes in expression patterns of genes associated with a broad range of structural and physiological functions during dormancy progression\
+- Carbohydrates\
+- Nanostructural carbohydrate dynamics has a family assigned critical roles in tree dormancy. Trees exhibit a strong fluctuation between dormance stages in a rate at which soluble sugars and starch are synthetzied and degraded\
+- Nanostructural carbohydrates have three main functions\
+- energy esterates\
+- transport and supply\
+- osmotic regulation and signaling\
+- These functions clearly varied within and between seasons\
+[Source: Video"Introduction to dormancy"](https://www.youtube.com/watch?v=qh9AZDmOm3o)
+
+## Dormancy physiology
+
+## Experimental and statistical determination of the chilling and forcing periods
+
+## Phenology record and BBCH scale
+
+What is phenology?\
+Phenology is the study of periodic events in biological life cycels and how these are influenced by seasonal and interannual variations in climate.\
+For example, the changes of a tree through the year and how the change in it's appearance is influenced by biotic (e.g. neigbour plants, insects, birds) and abiotic (for us most important the changing temperature) factors.\
+\
+Where does the term come from?\
+Often are cultural festivals connected to natural happenings, e.g. the blossom of cherries is very important for the Japanese culture.\
+Charles Morin\
+Botanist who worked on plant phenomena and made great use of the terms "periodical phenomena" and " anthrochronology". He also was the first who used the term phenology. He defined it with the following words: "This is a particular science having the goal to understand the manifestations of life governed by time, it is called phenology.".\
+Phenology and climate change\
+Phenology is very sensitive to eveen small changes.\
+pause at 3:42 in the video\
+\
+Phenology in agriculture\
+- Importance and uses\
+- Fruit trees: traditional phenological scales\
+BBCH-scale\
+
+## Exercises
+
+1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
+    -   Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
+2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
+    -   Growth stages are easily recognizable under field conditions.\
+    -   Growth stages are graded in the order of apperance.
+3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
+    The pictures are described from left to right. All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.\
+
+-   picture 1: BBCH-stage 57\
+    -   Main stage: 50, reproductive development or influence emergence\
+    -   stage 57: Sepals open (59 would be ballooning, but the petals are too compact for this stage)\
+-   picture 2: BBCH-stage 65\
+    -   Main stage 60: Flowering\
+    -   stage 65: Full flowering, at least 50 % of the flowers are open, the first petals are already falling.\
+-   picture 3: BBCH-stage: 86\
+    -   Main stage 80: ripening or maturity\
+    -   stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).\
+
+![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png) Picture 01: Phenological stages of a cherry tree\
+
+# Climate change and impact projection
+
+## The drivers of climate change
+
+## What we've already seen
+
+## Future scenarios
+
+## Impact projection approaches
+
+## Exercises
+
+1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
+
+-   Sun
+    -   Warms Earth through solar radiation
+    -   Activity varies slightly (cyclically) over time, as evidenced by sunspots
+    -   Differences in energy that reaches Earth are small
+    -   Explains only a small fraction of current climate variability
+    -   Important driver of climate change on geological timescales, but not of recent climate change
+-   Aerosols
+    -   Suspensions of liquid, solid, or mixed particles with highly variable chemical composition and size distribution
+    -   Natural sources: Sea salt, dust, volcanic eruptions, fires
+    -   Anthropogenic sources: combustion processes (e.g. power plants, cars, fires and cook stoves)
+    -   Generally have a cooling effect on the climate, especially locally
+    -   Human aerosol emissions are a major climate driver in some places
+    -   Global aerosol distribution – fraction of Aerosol Optical Depth related to human emissions
+    -   Major climate driver in industrial centers
+-   Clouds
+    -   Can have both cooling and warming effects
+    -   Net effect likely important but poorly understood
+    -   Positive feedback with warming possible: warmer -\> more clouds -\> warmer -\> more evaporation -\> more clouds
+-   Ozone
+    -   Surface (tropospheric) ozone: constituent of smog, health hazard (bad ozone)
+    -   Stratospheric ozone (10-35 km above surface): shields Earth from UV-B radiation (good ozone)
+    -   Greenhouse gas: presence in the stratosphere has a warming effect
+    -   Destroyed by chlorofluorocarbons (CFCs)
+-   Surface albedo
+    -   Reflection of radiation by the land surface
+    -   Light surfaces (e.g. ice, snow) reflect almost all radiation, dark surfaces (ocean, dark soil, forest) very little
+    -   Land cover change can affect albedo
+-   Greenhouse gases
+    -   Atmospheric gases that trap heat on Earth
+    -   Can absorb only radiation of certain wavelengths
+    -   Short-wave radiation from the sun passes
+    -   Long-wave radiation from Earth surface is absorbed
+    -   Greenhouse effects warms the planet
+-   Long-term drivers
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Milankovic cycles
+        -   Variation in Earth’s orbit: eccentricity, axial tilt and precession (19,000 to 400,000-year cycles)
+        -   Most likely cause of Ice Ages
+
+2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
+
+-   Recently the mean temperatures are globally rising clearly and very drastically
+-   Especially in the last 50 to 100 years
+-   this an other facors have a great influence in our climate and weather (regional and global)
+-   we will and already do experience more extreme weather (like more dry periods, extreme rain, mild and extreme winter)
+-   most important is the rapid warming (as conclusion)
+
+3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
+
+-   RCP -\> Representative Concentration Pathways
+-   RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
+-   the different scenarios are labeled after the possible radiative forcing values in the year 2100
+
+4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
+
+-   statistical models
+-   species distribution modeling
+-   process-based models
+-   climate analouge analysis
+
+# Winter chill projections
+
+## Some interesting knowlege
+
+## Exercises
+
+1.  Sketch out three data access and processing challenges that had to be overcome in order to produce chill projections with state-of-the-art methodology.\
+    -   three ways to view data
+
+    -   difficulties with processing
+
+    -   Chilling Hours Model
+
+        -   not a good model
+        -   especially for warm climates not trustable
+        -   
+2.  Outline, in your understanding, the basic steps that are necessary to make such projections.\
+    -   Steps needed for todays projections
+    -   
+
+# Manual chill analysis
+
+## Computing Chilling Hours from temperature data
+
+## Our first chill function
+
+## Exercises
+
+1.  Write a basic function that calculates warm hours (\>25° C).
+ echo = True, results = "hide"
+```{r}
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+```
+
+```{r}
+warm_hours <- function(THourly, 
+                        startYear,
+                        startMonth,
+                        startDay,                   
+                        startHour,
+                        endYear,
+                        endMonth,
+                        endDay,                   
+                        endHour)
+
+{THourly[,"Warm_Hour"] <- THourly$Temp > 25
+  Start_row <- which(hourtemps$Year == startYear &
+                     hourtemps$Month == startMonth &
+                     hourtemps$Day == startDay &
+                     hourtemps$Hour == startHour)
+
+  End_row <- which(hourtemps$Year == endYear &
+                   hourtemps$Month == endMonth &
+                   hourtemps$Day == endDay &
+                   hourtemps$Hour == endHour)
+
+  WHs <- sum(THourly$Chilling_Hour[Start_row:End_row])
+return(WHs)}
+```
+
+2.  Apply this function to the Winters_hours_gaps dataset
+
+```{r}
+hourtemps <- Winters_hours_gaps
+summary(hourtemps)
+
+warm_hours(hourtemps, 2008, 7, 1, 0,
+                           2008, 9, 30, 0)
+```
+
+3.  Extend this function, so that it can take start and end dates as inputs and sums up warm hours between these dates.
+
+
