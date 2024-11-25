@@ -517,16 +517,16 @@ station_list <- slice(station_list, 1:25)
 ```
 
 2. Download weather data for the most promissing station on the list.
-```{r, include = FALSE}
+```{r}
 weather_WES <- handle_gsod(action = "download_weather",
                            location = station_list$chillR_code[1],
                            time_interval = c(1990, 2020))
-weather_WES[[1]][1:20,]
+#weather_WES[[1]][1:20,]
 ```
 
 
 3. Convert the weather data into chillR format and save the data on your PC.
-```{r, include = FALSE}
+```{r}
 cleaned_weather_WES <- handle_gsod(weather_WES)
 cleaned_weather_WES[[1]][1000:1050,]
 
@@ -569,18 +569,18 @@ The stations 3, 5, 11 are suitable.
 
 4. Download weather data for promising stations, convert them to ChillR format and compile them in a list
 ```{r}
-patch_weather <- handle_gsod(action = "download_weather",
-                             location = as.character(station_list$chillR_code[c(3, 5, 11)]),
-                             time_interval = c(1990,2020)) %>%
-  handle_gsod()
+#patch_weather <- handle_gsod(action = "download_weather",
+#                             location = as.character(station_list$chillR_code[c(3, 5, 11)]),
+#                             time_interval = c(1990,2020)) %>%
+#  handle_gsod()
 ```
 
 5. Use the patch_daily_temperatures function to fill gaps
 ```{r}
-#Wesel <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Wesel_chillR_weather.csv")
-#patch_weather <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/patch_weather_first.csv")
+Wesel <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Wesel_chillR_weather.csv")
+
 #Wesel$Year <- as.integer(Wesel$Year)
-Wesel <- cleaned_weather_WES[[1]]
+
 patched <- patch_daily_temperatures(weather = Wesel,
                                     patch_weather = patch_weather,
                                     max_mean_bias = 1,
@@ -601,10 +601,10 @@ post_patch_stats <- fix_weather(patched)$QC
 ```{r}
 station_list
 
-patch_weather2 <- handle_gsod(action = "download_weather",
-                             location = as.character(station_list$chillR_code[c(3, 4, 5, 7, 9, 11, 12, 13, 15, 16)]),
-                             time_interval = c(1990,2020)) %>%
-  handle_gsod()
+#patch_weather2 <- handle_gsod(action = "download_weather",
+#                             location = as.character(station_list$chillR_code[c(3, 4, 5, 7, 9, 11, 12, 13, 15, 16)]),
+#                             time_interval = c(1990,2020)) %>%
+#  handle_gsod()
 
 patched_2 <- patch_daily_temperatures(weather = patched$weather,
                                     patch_weather = patch_weather2,
@@ -648,28 +648,22 @@ write.csv(patched_complete, "D:/! Ricardas Daten/Studium/Master/03. Semester (Wi
 ## Exercises
 1.  For the location you chose for your earlier analyses, use chillR's weather generator to produce 100 years of synthetic temperature data.
 ```{r}
-library(chillR)
-library(tidyverse)
-
-# we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
-Temp_l12 <- patched_complete %>%
-  temperature_generation(years = c(1998,2009),
+Temp_l12 <- patched_complete %>% 
+  temperature_generation(years=c(1998,2005),
                          sim_years = c(2001,2100))
 
-summary(Temp_l12)
+summary(patched_complete)
 
-# rbind() adds more rows to the table
-# cbind() adds more columns to the table
-# mute creates a column from already existing data
+Temperatures_l12 <- patched_complete %>% filter(Year %in% 1998:2005) %>%
+  cbind(Data_source = "observed") %>%
+  rbind(
+    Temp_l12[[1]] %>% select(c(Year, Month, Day, Tmin, Tmax)) %>% 
+          cbind(Data_source = "simulated")
+    ) %>%
+  mutate(Date = as.Date(ISOdate(2000, Month, Day)))
 
-Temperatures_l12 <- patched_complete %>% filter(Year %in% 1998:2009)
-Temperatures_l12 <- cbind(Data_source = "observed")
-Temperatures_l12 <- rbind(Temp_l12[[1]] %>% select(c(Year,Month,Day,Tmin,Tmax)) %>% cbind(Data_source = "simulated")) %>% mutate(Date = as.Date(ISOdate(2000,Month,Day)))
 
-
-ggplot(data = Temperatures_l12,
-       aes(Date,
-           Tmin)) +
+ggplot(data = Temperatures_l12, aes(Date, Tmin)) +
   geom_smooth(aes(colour = factor(Year))) +
   facet_wrap(vars(Data_source)) +
   theme_bw(base_size = 20) +
