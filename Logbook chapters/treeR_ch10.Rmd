@@ -1,0 +1,59 @@
+---
+title: "treeR_ch10"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Getting temperature data
+
+## Exercises
+
+1. Choose a location of interest and find the 25 closest weather stations using the handle_gsod function.
+
+- location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
+                        Bislich, 46487 Wesel
+- coordinates: latitude: 51°40'58.4"N
+               longitude: 6°29'46.4"E
+```{r}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+station_list <- handle_gsod(action = "list_stations",
+                            location = c(6.29, 51.40),
+                            time_interval = c(1990, 2020))
+station_list <- slice(station_list, 1:25)
+
+head(station_list)
+```
+
+2. Download weather data for the most promissing station on the list.
+```{r}
+weather_WES <- handle_gsod(action = "download_weather",
+                          location = station_list$chillR_code[1],
+                          time_interval = c(1990, 2020))
+```
+
+
+3. Convert the weather data into chillR format and save the data on your PC.
+```{r}
+cleaned_weather_WES <- handle_gsod(weather_WES)
+cleaned_weather_WES[[1]][1000:1050,]
+
+
+write.csv(station_list, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/station_list_Wesel.csv", row.names = FALSE)
+write.csv(weather_WES[[1]], "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_raw_weather.csv", row.names = FALSE)
+write.csv(cleaned_weather_WES[[1]], "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_chillR_weather.csv", row.names = FALSE)
+```
+

@@ -1,0 +1,733 @@
+---
+title: "Tree phenology analysis with R"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Introduction
+
+Content of this module\
+- Overview of methods to study the impact of climate, and it's change, on tree phenology\
+- Basics about tree phenology (esp. dormancy)\
+- How to use the chillR package for R - Impact that climate change has to projection models\
+- Appreciation for the importance of risks and uncertainty in climate change projection\
+- Understanding of how to use some staple tools of R code development\
+- Ability to use chillR functions for climate change impact projection\
+- Ability to use chillR functions for tree phenology analysis\
+- Understanding and ability to use the PhenoFlex dormancy analysis framework\
+
+Requirements for rewarding credits\
+- NO exam\
+- Participation in the course will be graded\
+- Submit a "learning logbook" at the end of the semester made with Rmarkdown\
+- You will record all learning and coding work\
+- The logbook will be also controlled during the semester\
+
+# The tools we use
+
+-   R and RStudio\
+-   git and github\
+-   Rmarkdown\
+
+Useful links for coding:\
+- [different themes for Rmarkdown](https://bootswatch.com/3/)\
+- [Chapter3 for basics](https://bookdown.org/yihui/rmarkdown/html-document.html)\
+- [cheat sheet](https://rmarkdown.rstudio.com/lesson-15.HTML)\
+- [basic code blocks](https://rmarkdown.rstudio.com/authoring_basics.html)\
+
+# Tree dormancy
+
+## Exercises
+
+1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
+    -   Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
+2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?\
+    -   Growth stages are easily recognizable under field conditions.\
+    -   Growth stages are graded in the order of apperance.
+3.  Classify the following phenological stages of sweet cherry according to the BBCH scale:\
+    The pictures are described from left to right. All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.\
+
+-   picture 1: BBCH-stage 57\
+    -   Main stage: 50, reproductive development or influence emergence\
+    -   stage 57: Sepals open (59 would be ballooning, but the petals are too compact for this stage)\
+-   picture 2: BBCH-stage 65\
+    -   Main stage 60: Flowering\
+    -   stage 65: Full flowering, at least 50 % of the flowers are open, the first petals are already falling.\
+-   picture 3: BBCH-stage: 86\
+    -   Main stage 80: ripening or maturity\
+    -   stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).\
+
+![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png) Picture 01: Phenological stages of a cherry tree\
+
+# Climate change and impact projection
+
+## Exercises
+
+1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.\
+
+-   Sun
+    -   Warms Earth through solar radiation
+    -   Activity varies slightly (cyclically) over time, as evidenced by sunspots
+    -   Differences in energy that reaches Earth are small
+    -   Explains only a small fraction of current climate variability
+    -   Important driver of climate change on geological timescales, but not of recent climate change
+-   Aerosols
+    -   Suspensions of liquid, solid, or mixed particles with highly variable chemical composition and size distribution
+    -   Natural sources: Sea salt, dust, volcanic eruptions, fires
+    -   Anthropogenic sources: combustion processes (e.g. power plants, cars, fires and cook stoves)
+    -   Generally have a cooling effect on the climate, especially locally
+    -   Human aerosol emissions are a major climate driver in some places
+    -   Global aerosol distribution – fraction of Aerosol Optical Depth related to human emissions
+    -   Major climate driver in industrial centers
+-   Clouds
+    -   Can have both cooling and warming effects
+    -   Net effect likely important but poorly understood
+    -   Positive feedback with warming possible: warmer -\> more clouds -\> warmer -\> more evaporation -\> more clouds
+-   Ozone
+    -   Surface (tropospheric) ozone: constituent of smog, health hazard (bad ozone)
+    -   Stratospheric ozone (10-35 km above surface): shields Earth from UV-B radiation (good ozone)
+    -   Greenhouse gas: presence in the stratosphere has a warming effect
+    -   Destroyed by chlorofluorocarbons (CFCs)
+-   Surface albedo
+    -   Reflection of radiation by the land surface
+    -   Light surfaces (e.g. ice, snow) reflect almost all radiation, dark surfaces (ocean, dark soil, forest) very little
+    -   Land cover change can affect albedo
+-   Greenhouse gases
+    -   Atmospheric gases that trap heat on Earth
+    -   Can absorb only radiation of certain wavelengths
+    -   Short-wave radiation from the sun passes
+    -   Long-wave radiation from Earth surface is absorbed
+    -   Greenhouse effects warms the planet
+-   Long-term drivers
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Trends in solar activity
+        -   Star life cycle, gradually decreasing luminosity over billions of years
+    -   Ocean currents/continent constellations
+        -   Global heat transfer (Gulf Stream, Antarctic Circumpolar Current; millions of years)
+    -   Plants vs. animals (hypothetical)
+        -   Balance of CO2 production and consumption
+        -   Back and forth between ‘Snowball Earth’ and ‘Greenhouse Earth’
+    -   Volcanic and meteorite activity
+        -   Volcanoes emit CO2 (warming) and dust (cooling) ; supervolcanoes caused massive effects
+        -   Meteorite impacts can raise dust concentrations for years
+    -   Milankovic cycles
+        -   Variation in Earth’s orbit: eccentricity, axial tilt and precession (19,000 to 400,000-year cycles)
+        -   Most likely cause of Ice Ages
+
+2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.\
+
+-   Recently the mean temperatures are globally rising clearly and very drastically
+-   Especially in the last 50 to 100 years
+-   this an other facors have a great influence in our climate and weather (regional and global)
+-   we will and already do experience more extreme weather (like more dry periods, extreme rain, mild and extreme winter)
+-   most important is the rapid warming (as conclusion)
+
+3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?\
+
+-   RCP -\> Representative Concentration Pathways
+-   RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
+-   the different scenarios are labeled after the possible radiative forcing values in the year 2100
+
+4.  Briefly describe the 4 climate impact projection methods described in the fourth video.\
+
+-   statistical models
+-   species distribution modeling
+-   process-based models
+-   climate analouge analysis
+
+# Winter chill projections
+
+## Exercises
+
+1.  Sketch out three data access and processing challenges that had to be overcome in order to produce chill projections with state-of-the-art methodology.\
+    -   three ways to view data
+
+    -   difficulties with processing
+
+    -   Chilling Hours Model
+
+        -   not a good model
+        -   especially for warm climates not trustable
+        -   
+2.  Outline, in your understanding, the basic steps that are necessary to make such projections.\
+    -   Steps needed for todays projections
+    -   
+
+# Manual chill analysis
+
+## Exercises
+
+1.  Write a basic function that calculates warm hours (\>25° C).
+Basis structure:
+> # read in Dataset
+> dataset[ , new_column_name] <- dataset$temperature_column > 25
+
+2.  Apply this function to the Winters_hours_gaps dataset
+
+```{r}
+# rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+```
+
+```{r}
+Winters_hours_gaps <- Winters_hours_gaps
+hourtemps <- Winters_hours_gaps[ , c("Year", "Month", "Day", "Hour", "Temp")]
+
+hourtemps[ , "warm_hour"] <- hourtemps$Temp > 25
+
+hourtemps[2503:2507, ]
+```
+3.  Extend this function, so that it can take start and end dates as inputs and sums up warm hours between these dates.
+
+```{r}
+Start_Date <- which(hourtemps$Year == 2008 &
+                      hourtemps$Month == 6 &
+                      hourtemps$Day == 1 &
+                      hourtemps$Hour == 12)
+
+End_date <- which(hourtemps$Year == 2008 &
+                    hourtemps$Month == 6 &
+                    hourtemps$Day == 30 &
+                    hourtemps$Hour ==12)
+sum(hourtemps$warm_hour[Start_Date:End_date])
+# The result is 250 and will be the controll for the following function with the same start and end
+
+
+sum_warmH <- function(WHourly, 
+                        startYear,
+                        startMonth,
+                        startDay,                   
+                        startHour,
+                        endYear,
+                        endMonth,
+                        endDay,                   
+                        endHour)
+{WHourly[,"warm_hour2"] <- WHourly$Temp > 25
+  Start_row <- which(hourtemps$Year == startYear &
+                     hourtemps$Month == startMonth &
+                     hourtemps$Day == startDay &
+                     hourtemps$Hour == startHour)
+
+  End_row <- which(hourtemps$Year == endYear &
+                   hourtemps$Month == endMonth &
+                   hourtemps$Day == endDay &
+                   hourtemps$Hour == endHour)
+
+WHs <- sum(WHourly$warm_hour[Start_row:End_row])
+    
+return(WHs)}
+
+sum_warmH(hourtemps,
+           startYear = 2008,
+           startMonth = 6,
+           startDay = 1,
+           startHour = 12,
+           endYear = 2008,
+           endMonth = 6,
+           endDay = 30,
+           endHour = 12)
+```
+
+
+# Chill models
+
+## Exercises
+
+1. Run the "chilling()" function on the Winters_hours_gap dataset.
+```{r}
+hourtemps <- Winters_hours_gaps[ , c("Year", "Month", "Day", "Hour", "Temp")]
+?chilling
+
+chilling_l7 <- chilling(make_JDay(hourtemps),
+                   Start_JDay = 90,
+                   End_JDay = 100)
+chilling_l7
+```
+
+2. Create your own temperature-weighting chill model using the "step_model()" function.
+3. Run this model on the Winters_hours_gap dataset using the "tempResponse()" function.
+
+```{r}
+df_l7 = data.frame(
+  lower = c(-1000, 1, 2, 3, 4, 5, 6),
+  upper = c(    1, 2, 3, 4, 5, 6, 1000),
+  weight = c(   0, 1, 2, 3, 2, 1, 0))
+
+step_model_l7 <- step_model(HourTemp=hourtemps$Temp, df=df_l7)
+
+TResp_l7 <- tempResponse(make_JDay(hourtemps),
+                         Start_JDay = 90,
+                         End_JDay = 100,
+                         models = list(Chill_Portions = Dynamic_Model,
+                                       GDH = GDH))
+TResp_l7
+```
+GDH = Growing Degree Days
+
+
+
+# Making hourly temperatures
+
+## Exercises
+
+1. Choose a location of interest, find out its latitude and produce plots of daily sunrise, sunset and day length.
+- location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
+                        Bislich, 46487 Wesel
+- coordinates: latitude: 51°40'58.4"N
+               longitude: 6°29'46.4"E
+
+```{r}
+require(chillR)
+require(ggplot2)
+require(tidyr)
+
+Days_l8 <- daylength(latitude = 51.4, JDay = 1:365)
+Days_df_l8 <- data.frame(JDay = 1:365,
+                         Sunrise = Days_l8$Sunrise,
+                         Sunset = Days_l8$Sunset,
+                         Daylength = Days_l8$Daylength)
+
+Days_df_l8 <- pivot_longer(Days_df_l8, cols=c(Sunrise:Daylength))
+
+ggplot(Days_df_l8, aes(JDay, value)) +
+        geom_line(lwd = 1.5) +
+        facet_grid(cols = vars(name)) +
+        ylab("Time of Day / Daylength [hours]") +
+        xlab("Day of the year [JDay]") +
+        theme_bw(base_size = 20)
+```
+
+
+2. Produce an hourly dataset, based on idealized daily curves, for the KA_weather dataset (included in ChillR).
+
+```{r}
+# KA_weather
+hourtemp_KA <- stack_hourly_temps(KA_weather, latitude=50.4)
+```
+
+3. Produce empirical temperature curve parameters for the Winters_hours_gaps dataset, and use them to predict hourly values from daily temperatures (this is very similar to the example above, but please make sure you understand what's going on).
+
+```{r}
+empi_curve_l8 <- Empirical_daily_temperature_curve(Winters_hours_gaps)
+
+ggplot(data = empi_curve_l8[1:96, ], aes(Hour, Prediction_coefficient)) +
+  geom_line(lwd = 1.3, col = "red") +
+  facet_grid(rows = vars(Month)) +
+  xlab("Hour of the day") +
+  ylab("Prediction coefficient") +
+  theme_bw(base_size = 20)
+```
+
+```{r}
+coeffs_l8 <- Empirical_daily_temperature_curve(Winters_hours_gaps)
+Winters_daily_l8 <- make_all_day_table(Winters_hours_gaps, input_timestep = "hour")
+Winter_hours_l8 <- Empirical_hourly_temperatures(Winters_daily_l8, coeffs_l8)
+
+
+# simplify the data for easier use
+Winter_hours_l8 <- Winter_hours_l8[ , c("Year", "Month", "Day", "Hour", "Temp")]
+colnames(Winter_hours_l8)[ncol(Winter_hours_l8)] <- "Temp_empirical"
+Winters_ideal_l8 <- stack_hourly_temps(Winters_daily_l8, latitude = 38.5)$hourtemps
+Winters_ideal_l8 <- Winters_ideal_l8[ , c("Year", "Month", "Day", "Hour", "Temp")]
+colnames(Winters_ideal_l8)[ncol(Winters_ideal_l8)] <- "Temp_ideal"
+
+
+# create the "triangular" data set to compare in the end
+Winters_triangle_l8 <- Winters_daily_l8
+Winters_triangle_l8[ , "Hour"] <- 0
+Winters_triangle_l8$Hour[nrow(Winters_triangle_l8)] <- 23
+Winters_triangle_l8[ , "Temp"] <- 0
+Winters_triangle_l8 <- make_all_day_table(Winters_triangle_l8, timestep = "hour")
+colnames(Winters_triangle_l8)[ncol(Winters_triangle_l8)] <- "Temp_triangular"
+
+
+# the following loop will fill in the daily Tmin and Tmax values for every hour
+for (i in 2:nrow(Winters_triangle_l8))
+{if (is.na(Winters_triangle_l8$Tmin[i]))
+  Winters_triangle_l8$Tmin[i] <- Winters_triangle_l8$Tmin[i - 1]
+ if (is.na(Winters_triangle_l8$Tmax[i]))
+   Winters_triangle_l8$Tmax[i] <- Winters_triangle_l8$Tmax[i - 1]}
+
+Winters_triangle_l8$Temp_triangular <- NA
+
+
+# Tmin is fixated to the 6th hour of each day
+Winters_triangle_l8$Temp_triangular[which(Winters_triangle_l8$Hour == 6)] <-
+  Winters_triangle_l8$Tmin[which(Winters_triangle_l8$Hour == 6)]
+
+
+# Tmax is fixated to the 18th hour of each day
+Winters_triangle_l8$Temp_triangular[which(Winters_triangle_l8$Hour == 18)] <-
+  Winters_triangle_l8$Tmax[which(Winters_triangle_l8$Hour == 18)]
+
+
+# the following loop will fill in the gaps between the min and max data in a linear way
+Winters_triangle_l8$Temp_triangular <- interpolate_gaps(Winters_triangle_l8$Temp_triangular)$interp
+Winters_triangle_l8 <- Winters_triangle_l8[ , c("Year", "Month", "Day", "Hour", "Temp_triangular")]
+
+
+# merge all created data frames for easy display
+Winters_temps_l8 <- merge(Winters_hours_gaps, Winter_hours_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+Winters_temps_l8 <- merge(Winters_temps_l8, Winters_triangle_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+Winters_temps_l8 <- merge(Winters_temps_l8, Winters_ideal_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+
+
+# convert the date into R's date format and reorganize the data frame
+Winters_temps_l8[, "DATE"] <-
+  ISOdate(Winters_temps_l8$Year,
+          Winters_temps_l8$Month,
+          Winters_temps_l8$Day,
+          Winters_temps_l8$Hour)
+
+
+Winters_temps_to_plot_l8 <-
+  Winters_temps_l8[, c("DATE",
+                    "Temp",
+                    "Temp_empirical",
+                    "Temp_triangular",
+                    "Temp_ideal")]
+Winters_temps_to_plot_l8 <- Winters_temps_to_plot_l8[100:200, ]
+Winters_temps_to_plot_l8 <- pivot_longer(Winters_temps_to_plot_l8, cols=Temp:Temp_ideal)
+colnames(Winters_temps_to_plot_l8) <- c("DATE", "Method", "Temperature")
+
+
+ggplot(data = Winters_temps_to_plot_l8, aes(DATE, Temperature, colour = Method)) +
+  geom_line(lwd = 1.3) + ylab("Temperature (°C)") + xlab("Date")
+
+
+
+```
+
+# Some useful tools in R
+
+## Exercises
+
+1. Based on the Winters_hours_gaps data set, use magrittr pipes and functions of the tidyverse to accomplish the following:
+    a. Convert the data set into a tibble
+    b. Select only the top 10 rows of the data set
+    c. Convert the tibble to a long format, with separate rows for Temp_gaps and Temp
+    d. Use ggplot2 to plot Temp_gaps and temp as facets (point or line plot)
+    e. Convert the data set back to the wide format
+    f. Select only the following columns: Year, Month, Day and Temp
+    g. Sort the data set by the Temp column, in descending order
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+# Convert the data set into a tibble
+hourtemps <- Winters_hours_gaps
+hourtemps %>% as_tibble() %>% summary() 
+
+# Select only the top 10 rows of the data set
+hourtemps_l9 <- as_tibble(hourtemps[1:10, ])
+
+# Convert the tibble to a long format, with separate rows for Temp_gaps and Temp
+hourtemps_long_l9 <- hourtemps_l9 %>% pivot_longer(cols = Temp:Temp_gaps)
+
+
+# Use ggplot2 to plot Temp_gaps and temp as facets (point or line plot)
+ggplot(hourtemps_l9, aes(Hour, Temp_gaps)) +
+  geom_point()
+
+# Convert the data set back to the wide format
+hourtemps_wide_l9 <- hourtemps_long_l9 %>% pivot_wider(names_from = name)
+
+# Select only the following columns: Year, Month, Day and Temp
+hourtemps_wide_l9 %>% select(c(Month, Day, Temp))
+
+# Sort the data set by the Temp column, in descending order
+hourtemps_wide_l9 %>% arrange(desc(Temp))
+    
+```
+
+2. For the Winter_hours_gaps data set, write a for loop to convert all temperatures (Temp column) to degrees Fahrenheit.
+
+```{r}
+HT_l9.2 <- Winters_hours_gaps
+HT_l9.2$Temp_F <- NA
+for (i in 1:nrow(HT_l9.2))
+  {HT_l9.2$Temp_F[i] <- (HT_l9.2$Temp[i] * 9/5) + 32}
+```
+
+3. Execute the same operation with a function from the apply family.
+
+```{r}
+HT_l9.3 <- hourtemps
+func_Far_l9.3 <- function(x)
+  {(x * 9/5) + 32}
+
+for (i in 1:nrow(hourtemps))
+  {HT_l9.3$Temp_F[i] <- sapply(HT_l9.3$Temp[i], func_Far_l9.3)}
+```
+
+4. Now use the tidyverse function mutate to achieve the same outcome
+
+```{r}
+HT_l9.2 <- hourtemps %>% mutate(Temp_F = (Temp * 9/5) + 32)
+```
+
+
+
+# Getting temperature data
+
+## Exercises
+
+1. Choose a location of interest and find the 25 closest weather stations using the handle_gsod function.
+
+- location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
+                        Bislich, 46487 Wesel
+- coordinates: latitude: 51°40'58.4"N
+               longitude: 6°29'46.4"E
+```{r}
+library(chillR)
+station_list <- handle_gsod(action = "list_stations",
+                            location = c(6.29, 51.40),
+                            time_interval = c(1990, 2020))
+station_list <- slice(station_list, 1:25)
+
+#require(kableExtra)
+#kable(station_list) %>%
+#  kable_styling("striped", position = "left", font_size = 8)
+```
+
+2. Download weather data for the most promissing station on the list.
+```{r, include = FALSE}
+weather_WES <- handle_gsod(action = "download_weather",
+                           location = station_list$chillR_code[1],
+                           time_interval = c(1990, 2020))
+weather_WES[[1]][1:20,]
+```
+
+
+3. Convert the weather data into chillR format and save the data on your PC.
+```{r, include = FALSE}
+cleaned_weather_WES <- handle_gsod(weather_WES)
+cleaned_weather_WES[[1]][1000:1050,]
+
+
+write.csv(station_list, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/station_list_Wesel.csv", row.names = FALSE)
+write.csv(weather_WES[[1]], "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Wesel_raw_weather.csv", row.names = FALSE)
+write.csv(cleaned_weather_WES[[1]], "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Wesel_chillR_weather.csv", row.names = FALSE)
+```
+
+
+# Filling gaps in temperature records
+
+## Exercises
+
+1. Use chillR functions to find out how many gaps you have in this dataset (even if you have none, please still follow all further steps).
+```{r}
+library(chillR)
+library(tidyverse)
+
+weather <- cleaned_weather_WES$`ARCEN AWS`
+weather <- weather %>% make_all_day_table()
+
+Wesel_QC <- fix_weather(weather)$QC
+
+table(is.na(weather$Tmin))
+Wesel_QC
+```
+
+2. Create a list of the 25 closest weather stations using the handle_gsod function.
+```{r}
+station_list <- handle_gsod(action = "list_stations",
+                            location = c(6.29, 51.40),
+                            time_interval = c(1990, 2020))
+station_list <- slice(station_list, 1:25)
+station_list
+```
+
+3. Identify suitable weather stations for patching gaps.
+The stations 3, 5, 11 are suitable.
+
+4. Download weather data for promising stations, convert them to ChillR format and compile them in a list
+```{r}
+patch_weather <- handle_gsod(action = "download_weather",
+                             location = as.character(station_list$chillR_code[c(3, 5, 11)]),
+                             time_interval = c(1990,2020)) %>%
+  handle_gsod()
+```
+
+5. Use the patch_daily_temperatures function to fill gaps
+```{r}
+#Wesel <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Wesel_chillR_weather.csv")
+#patch_weather <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/patch_weather_first.csv")
+#Wesel$Year <- as.integer(Wesel$Year)
+Wesel <- cleaned_weather_WES[[1]]
+patched <- patch_daily_temperatures(weather = Wesel,
+                                    patch_weather = patch_weather,
+                                    max_mean_bias = 1,
+                                    max_stdev_bias = 2)
+```
+
+6. Investigate the results - have all gaps been filled?
+```{r}
+patched$statistics[[1]]
+patched$statistics[[2]]
+patched$statistics[[3]]
+
+post_patch_stats <- fix_weather(patched)$QC
+
+```
+
+7. If necessary, repeat until you have a dataset you can work with in further analyses.
+```{r}
+station_list
+
+patch_weather2 <- handle_gsod(action = "download_weather",
+                             location = as.character(station_list$chillR_code[c(3, 4, 5, 7, 9, 11, 12, 13, 15, 16)]),
+                             time_interval = c(1990,2020)) %>%
+  handle_gsod()
+
+patched_2 <- patch_daily_temperatures(weather = patched$weather,
+                                    patch_weather = patch_weather2,
+                                    max_mean_bias = 1,
+                                    max_stdev_bias = 2)
+
+#patched_2$statistics[[1]]
+#patched_2$statistics[[2]]
+#patched_2$statistics[[3]]
+#patched_2$statistics[[4]]
+#patched_2$statistics[[5]]
+#patched_2$statistics[[6]]
+#patched_2$statistics[[7]]
+patched_2$statistics[[8]]
+patched_2$statistics[[9]]
+patched_2$statistics[[10]]
+
+post_patch_stats_2 <- fix_weather(patched_2)$QC
+post_patch_stats_2
+
+patched_complete <- patched_2$weather %>% make_all_day_table()
+
+Tmin_int <- interpolate_gaps(patched_complete[,"Tmin"])
+
+patched_complete <- patched_complete %>% mutate(Tmin = Tmin_int$interp,
+                              Tmin_interpolated = Tmin_int$missing)
+
+Tmax_int <- interpolate_gaps(patched_complete[,"Tmax"])
+
+patched_complete <- patched_complete %>% mutate(Tmax = Tmax_int$interp,
+                              Tmax_interpolated = Tmax_int$missing)
+
+fix_weather(patched_complete)$QC
+
+write.csv(patched_complete, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/patched_weather_3_Wesel.csv", row.names = FALSE)
+```
+
+
+# Generating temperature scenarios
+
+## Exercises
+1.  For the location you chose for your earlier analyses, use chillR's weather generator to produce 100 years of synthetic temperature data.
+```{r}
+library(chillR)
+library(tidyverse)
+
+# we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
+Temp_l12 <- patched_complete %>%
+  temperature_generation(years = c(1998,2009),
+                         sim_years = c(2001,2100))
+
+summary(Temp_l12)
+
+# rbind() adds more rows to the table
+# cbind() adds more columns to the table
+# mute creates a column from already existing data
+
+Temperatures_l12 <- patched_complete %>% filter(Year %in% 1998:2009)
+Temperatures_l12 <- cbind(Data_source = "observed")
+Temperatures_l12 <- rbind(Temp_l12[[1]] %>% select(c(Year,Month,Day,Tmin,Tmax)) %>% cbind(Data_source = "simulated")) %>% mutate(Date = as.Date(ISOdate(2000,Month,Day)))
+
+
+ggplot(data = Temperatures_l12,
+       aes(Date,
+           Tmin)) +
+  geom_smooth(aes(colour = factor(Year))) +
+  facet_wrap(vars(Data_source)) +
+  theme_bw(base_size = 20) +
+  theme(legend.position = "none") +
+  scale_x_date(date_labels = "%b")
+```
+
+
+2. Calculate winter chill (in Chill Portions) for your synthetic weather, and illustrate your results as histograms and cumulative distributions.
+```{r}
+
+```
+
+
+3. Produce similar plots for the number of freezing hours (<0°C) in April (or October, if your site is in the Southern Hemisphere) for your location of interest.
+```{r}
+
+```
+
+
+
+# Saving and loading data (and hiding this in markdown)
+##
+
+
+## Exercise
+1. Apply the saving, loading and hiding in your logbook.
+
+
+# Historic temperature scenarios
+
+## Exercise
+1. For the location you chose for previous exercises, produce historic temperature scenarios representing several years of the historic record (your choice).
+
+
+2. Produce chill distributions for these scenarios and plot them.
+
+
+
+save an image with the following code:
+das kann mit einem + einfach ans Ende eines ggplot codes gepackt werden (?)
+ggsave("data/chill_comp.png",
+        width = 8, height = 8,
+        dpi = 600)
+dpi ist die Auflösung des Bildes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

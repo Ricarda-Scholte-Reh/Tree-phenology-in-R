@@ -1,0 +1,87 @@
+---
+title: "treeR_ch9"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Some useful tools in R
+
+## Exercises
+
+1. Based on the Winters_hours_gaps data set, use magrittr pipes and functions of the tidyverse to accomplish the following:
+    a. Convert the data set into a tibble
+    b. Select only the top 10 rows of the data set
+    c. Convert the tibble to a long format, with separate rows for Temp_gaps and Temp
+    d. Use ggplot2 to plot Temp_gaps and temp as facets (point or line plot)
+    e. Convert the data set back to the wide format
+    f. Select only the following columns: Year, Month, Day and Temp
+    g. Sort the data set by the Temp column, in descending order
+
+```{r}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+# Convert the data set into a tibble
+hourtemps <- Winters_hours_gaps
+hourtemps %>% as_tibble() %>% summary() 
+
+# Select only the top 10 rows of the data set
+hourtemps_l9 <- as_tibble(hourtemps[1:10, ])
+
+# Convert the tibble to a long format, with separate rows for Temp_gaps and Temp
+hourtemps_long_l9 <- hourtemps_l9 %>% pivot_longer(cols = Temp:Temp_gaps)
+
+
+# Use ggplot2 to plot Temp_gaps and temp as facets (point or line plot)
+ggplot(hourtemps_l9, aes(Hour, Temp_gaps)) +
+  geom_point()
+
+# Convert the data set back to the wide format
+hourtemps_wide_l9 <- hourtemps_long_l9 %>% pivot_wider(names_from = name)
+
+# Select only the following columns: Year, Month, Day and Temp
+hourtemps_wide_l9 %>% select(c(Month, Day, Temp))
+
+# Sort the data set by the Temp column, in descending order
+hourtemps_wide_l9 %>% arrange(desc(Temp))
+    
+```
+
+2. For the Winter_hours_gaps data set, write a for loop to convert all temperatures (Temp column) to degrees Fahrenheit.
+
+```{r}
+HT_l9.2 <- Winters_hours_gaps
+HT_l9.2$Temp_F <- NA
+for (i in 1:nrow(HT_l9.2))
+  {HT_l9.2$Temp_F[i] <- (HT_l9.2$Temp[i] * 9/5) + 32}
+```
+
+3. Execute the same operation with a function from the apply family.
+
+```{r}
+HT_l9.3 <- hourtemps
+func_Far_l9.3 <- function(x)
+  {(x * 9/5) + 32}
+
+for (i in 1:nrow(hourtemps))
+  {HT_l9.3$Temp_F[i] <- sapply(HT_l9.3$Temp[i], func_Far_l9.3)}
+```
+
+4. Now use the tidyverse function mutate to achieve the same outcome
+
+```{r}
+HT_l9.2 <- hourtemps %>% mutate(Temp_F = (Temp * 9/5) + 32)
+```
+

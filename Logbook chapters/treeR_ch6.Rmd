@@ -1,0 +1,94 @@
+---
+title: "treeR_ch6"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Manual chill analysis
+
+## Exercises
+
+1.  Write a basic function that calculates warm hours (\>25° C).
+Basis structure:
+> # read in Dataset
+> dataset[ , new_column_name] <- dataset$temperature_column > 25
+
+2.  Apply this function to the Winters_hours_gaps dataset
+
+```{r}
+# rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+```
+
+```{r}
+Winters_hours_gaps <- Winters_hours_gaps
+hourtemps <- Winters_hours_gaps[ , c("Year", "Month", "Day", "Hour", "Temp")]
+
+hourtemps[ , "warm_hour"] <- hourtemps$Temp > 25
+
+hourtemps[2503:2507, ]
+```
+3.  Extend this function, so that it can take start and end dates as inputs and sums up warm hours between these dates.
+
+```{r}
+Start_Date <- which(hourtemps$Year == 2008 &
+                      hourtemps$Month == 6 &
+                      hourtemps$Day == 1 &
+                      hourtemps$Hour == 12)
+
+End_date <- which(hourtemps$Year == 2008 &
+                    hourtemps$Month == 6 &
+                    hourtemps$Day == 30 &
+                    hourtemps$Hour ==12)
+sum(hourtemps$warm_hour[Start_Date:End_date])
+# The result is 250 and will be the controll for the following function with the same start and end
+
+
+sum_warmH <- function(WHourly, 
+                        startYear,
+                        startMonth,
+                        startDay,                   
+                        startHour,
+                        endYear,
+                        endMonth,
+                        endDay,                   
+                        endHour)
+{WHourly[,"warm_hour2"] <- WHourly$Temp > 25
+  Start_row <- which(hourtemps$Year == startYear &
+                     hourtemps$Month == startMonth &
+                     hourtemps$Day == startDay &
+                     hourtemps$Hour == startHour)
+
+  End_row <- which(hourtemps$Year == endYear &
+                   hourtemps$Month == endMonth &
+                   hourtemps$Day == endDay &
+                   hourtemps$Hour == endHour)
+
+WHs <- sum(WHourly$warm_hour[Start_row:End_row])
+    
+return(WHs)}
+
+sum_warmH(hourtemps,
+           startYear = 2008,
+           startMonth = 6,
+           startDay = 1,
+           startHour = 12,
+           endYear = 2008,
+           endMonth = 6,
+           endDay = 30,
+           endHour = 12)
+```
+
+
+

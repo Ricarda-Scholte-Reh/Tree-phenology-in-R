@@ -621,7 +621,9 @@ patched_2 <- patch_daily_temperatures(weather = patched$weather,
 patched_2$statistics[[8]]
 patched_2$statistics[[9]]
 patched_2$statistics[[10]]
+```
 
+```{r}
 post_patch_stats_2 <- fix_weather(patched_2)$QC
 post_patch_stats_2
 
@@ -650,26 +652,44 @@ write.csv(patched_complete, "D:/! Ricardas Daten/Studium/Master/03. Semester (Wi
 ```{r}
 library(chillR)
 library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+patched_complete <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/patched_weather_3_Wesel.csv")
 
 # we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
+
 Temp_l12 <- patched_complete %>%
   temperature_generation(years = c(1998,2009),
                          sim_years = c(2001,2100))
 
-summary(Temp_l12)
+#write.csv(Temp_l12, "D:/! Ricardas Daten/Studium/Master/03. #Semester (WiSe 24-25)/Tree phenology analysis in #R/Temp_l12_Wesel.csv", row.names = FALSE)
+#summary(Temp_l12)
+#Temp_l12 <- read.csv("D:/! Ricardas Daten/Studium/Master/03. #Semester (WiSe 24-25)/Tree phenology analysis in #R/Temp_l12_Wesel.csv")
+
 
 # rbind() adds more rows to the table
 # cbind() adds more columns to the table
 # mute creates a column from already existing data
 
-Temperatures_l12 <- patched_complete %>% filter(Year %in% 1998:2009)
-Temperatures_l12 <- cbind(Data_source = "observed")
-Temperatures_l12 <- rbind(Temp_l12[[1]] %>% select(c(Year,Month,Day,Tmin,Tmax)) %>% cbind(Data_source = "simulated")) %>% mutate(Date = as.Date(ISOdate(2000,Month,Day)))
+#Temperatures_l12$Year <- as.numeric(Temperatures_l12$Year)
+#Temperatures_l12$Month <- as.numeric(Temperatures_l12$Month)
+#Temperatures_l12$Day <- as.numeric(Temperatures_l12$Day)
+#Temperatures_l12$Tmin <- as.numeric(Temperatures_l12$Tmin)
+#Temperatures_l12$Tmax <- as.numeric(Temperatures_l12$Tmax)
+
+Temperatures <- patched_complete %>% filter(Year %in% 1998:2005) %>%
+  cbind(Data_source="observed") %>%
+  rbind(
+    Temp_l12[[1]] %>% select(c(Year, Month, Day, Tmin, Tmax)) %>% 
+      cbind(Data_source = "simulated")
+    ) %>%
+  mutate(Date=as.Date(ISOdate(2000,Month,Day)))
 
 
 ggplot(data = Temperatures_l12,
-       aes(Date,
-           Tmin)) +
+       aes(Date, Tmin)) +
   geom_smooth(aes(colour = factor(Year))) +
   facet_wrap(vars(Data_source)) +
   theme_bw(base_size = 20) +
@@ -709,8 +729,12 @@ ggplot(data = Temperatures_l12,
 
 
 
-
-
+save an image with the following code:
+das kann mit einem + einfach ans Ende eines ggplot codes gepackt werden (?)
+ggsave("data/chill_comp.png",
+        width = 8, height = 8,
+        dpi = 600)
+dpi ist die Auflösung des Bildes
 
 
 

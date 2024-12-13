@@ -1,0 +1,119 @@
+---
+title: "treeR_ch11"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Filling gaps in temperature records
+
+## Exercises
+
+1. Use chillR functions to find out how many gaps you have in this dataset (even if you have none, please still follow all further steps).
+```{r}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+cleaned_weather_WES <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_chillR_weather.csv")
+
+#cleaned_weather_WES <- cleaned_weather_WES %>% make_all_day_table()
+
+Wesel_QC <- fix_weather(cleaned_weather_WES)$QC
+
+table(is.na(cleaned_weather_WES$Tmin))
+Wesel_QC
+```
+
+2. Create a list of the 25 closest weather stations using the handle_gsod function.
+```{r}
+station_list <- handle_gsod(action = "list_stations",
+                            location = c(6.29, 51.40),
+                            time_interval = c(1990, 2020))
+station_list <- slice(station_list, 1:25)
+station_list
+```
+
+3. Identify suitable weather stations for patching gaps.
+The stations 3, 5, 11 are suitable.
+
+4. Download weather data for promising stations, convert them to ChillR format and compile them in a list
+```{r}
+patch_weather <- handle_gsod(action = "download_weather",
+                             location = as.character(station_list$chillR_code[c(3, 5, 11)]),
+                             time_interval = c(1990,2020)) %>% handle_gsod()
+```
+
+5. Use the patch_daily_temperatures function to fill gaps
+```{r}
+patched <- patch_daily_temperatures(weather = cleaned_weather_WES,
+                                    patch_weather = patch_weather,
+                                    max_mean_bias = 1,
+                                    max_stdev_bias = 2)
+```
+
+6. Investigate the results - have all gaps been filled?
+```{r}
+patched$statistics[[1]]
+patched$statistics[[2]]
+patched$statistics[[3]]
+
+#post_patch_stats <- fix_weather(patched)$QC
+
+```
+
+7. If necessary, repeat until you have a dataset you can work with in further analyses.
+```{r}
+station_list
+
+patch_weather2 <- handle_gsod(action = "download_weather",
+                             location = as.character(station_list$chillR_code[c(3, 4, 5, 7, 9, 11, 12, 13, 15, 16)]),
+                             time_interval = c(1990,2020)) %>%
+  handle_gsod()
+```
+
+```{r}
+patched_2 <- patch_daily_temperatures(weather = cleaned_weather_WES,
+                                    patch_weather = patch_weather2,
+                                    max_mean_bias = 1,
+                                    max_stdev_bias = 2)
+
+patched_2$statistics[[1]]
+patched_2$statistics[[6]]
+patched_2$statistics[[7]]
+```
+
+```{r}
+post_patch_stats_2 <- fix_weather(patched_2)$QC
+post_patch_stats_2
+
+patched_complete <- patched_2$weather %>% make_all_day_table()
+
+Tmin_int <- interpolate_gaps(patched_complete[,"Tmin"])
+
+patched_complete <- patched_complete %>% mutate(Tmin = Tmin_int$interp,
+                              Tmin_interpolated = Tmin_int$missing)
+
+Tmax_int <- interpolate_gaps(patched_complete[,"Tmax"])
+
+patched_complete <- patched_complete %>% mutate(Tmax = Tmax_int$interp,
+                              Tmax_interpolated = Tmax_int$missing)
+
+fix_weather(patched_complete)$QC
+
+fix_QC <- fix_weather(patched_complete)$QC
+fix_QC
+table(is.na(patched_complete$Tmin))
+
+write.csv(patched_complete, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv", row.names = FALSE)
+```

@@ -1,0 +1,255 @@
+---
+title: "treeR_ch13"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Historic temperature scenarios
+
+## Exercise
+
+1.  For the location you chose for previous exercises, produce historic temperature scenarios representing several years of the historic record (your choice).
+
+```{r}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+patched_complete <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv")
+
+# we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
+Temp <- patched_complete %>%
+  temperature_generation(years = c(1998,2009),
+                         sim_years = c(2001,2100))
+
+change_scenario <- data.frame(Tmin = rep(2,12),
+                              Tmax = rep(2,12))
+change_scenario
+
+Temp_2 <- temperature_generation(KA_weather,
+                                 years = c(1998,2005),
+                                 sim_years = c(2001,2100),
+                                 temperature_scenario = change_scenario)
+
+# As before, we'll make a data.frame that contains all
+# our data, so we can take a look at it.
+
+Temperature_scenarios <- KA_weather %>%
+  filter(Year %in% 1998:2005) %>%
+  cbind(Data_source = "observed") %>%
+  rbind(Temp[[1]] %>% 
+          select(c(Year, Month, Day, Tmin, Tmax)) %>% 
+          cbind(Data_source = "simulated")
+        ) %>%
+  rbind(Temp_2[[1]] %>%
+          select(c(Year, Month, Day, Tmin, Tmax)) %>% 
+          cbind(Data_source = "Warming_2C")
+        ) %>%
+  mutate(Date = as.Date(ISOdate(2000,
+                                Month,
+                                Day)))
+
+ggplot(data = Temperature_scenarios, 
+       aes(Date,Tmin)) +
+  geom_smooth(aes(colour = factor(Year))) +
+  facet_wrap(vars(Data_source)) +
+  theme_bw(base_size = 20) +
+  theme(legend.position = "none") +
+  scale_x_date(date_labels = "%b")
+
+ggplot(data = Temperature_scenarios, 
+       aes(Date,Tmax)) +
+  geom_smooth(aes(colour = factor(Year))) +
+  facet_wrap(vars(Data_source)) +
+  theme_bw(base_size = 20) +
+  theme(legend.position = "none") +
+  scale_x_date(date_labels = "%b")
+```
+
+```{r}
+summary(patched_complete)
+# 1994 bis 2020
+
+
+scenario_1995 <- temperature_scenario_from_records(weather = patched_complete,
+                                                   year = 1995)
+temps_1995 <- temperature_generation(weather = patched_complete,
+                                     years = c(1994,2020),
+                                     sim_years = c(2001,2100),
+                                     temperature_scenario = scenario_1995)
+median(patched_complete$Year)
+
+scenario_2007 <- temperature_scenario_from_records(weather = patched_complete,
+                                                   year = 2007)
+
+relative_scenario <- temperature_scenario_baseline_adjustment(
+  baseline = scenario_2007,
+  temperature_scenario = scenario_1995)
+
+temps_1980<-temperature_generation(weather = patched_complete,
+                                   years = c(1994,2020),
+                                   sim_years = c(2001,2100),
+                                   temperature_scenario = relative_scenario)
+
+# creating all wanted scenarios
+all_past_scenarios <- temperature_scenario_from_records(
+  weather = patched_complete,
+  year = c(1995,
+           2000,
+           2005,
+           2010,
+           2020))
+
+adjusted_scenarios <- temperature_scenario_baseline_adjustment(
+  baseline = scenario_2007,
+  temperature_scenario = all_past_scenarios)
+
+all_past_scenario_temps <- temperature_generation(
+  weather = patched_complete,
+  years = c(1994,2020),
+  sim_years = c(2001,2100),
+  temperature_scenario = adjusted_scenarios)
+
+save_temperature_scenarios(all_past_scenario_temps, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters", "Wesel_hist_scenarios")
+```
+
+2.  Produce chill distributions for these scenarios and plot them.
+
+```{r}
+frost_model <- function(x)
+  step_model(x,
+             data.frame(
+               lower=c(-1000,0),
+               upper=c(0,1000),
+               weight=c(1,0)))
+
+models <- list(Chill_Portions = Dynamic_Model,
+               GDH = GDH,
+               Frost_H = frost_model)
+
+chill_hist_scenario_list <- tempResponse_daily_list(all_past_scenario_temps,
+                                                    latitude = 51.4,
+                                                    Start_JDay = 305,
+                                                    End_JDay = 59,
+                                                    models = models)
+
+chill_hist_scenario_list <- lapply(chill_hist_scenario_list,
+                                   function(x) x %>%
+                                     filter(Perc_complete == 100))
+
+save_temperature_scenarios(chill_hist_scenario_list, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters", "Wesel_hist_chill_305_59")
+
+scenarios <- names(chill_hist_scenario_list)[1:4]
+
+all_scenarios <- chill_hist_scenario_list[[scenarios[1]]] %>%
+  mutate(scenario = as.numeric(scenarios[1]))
+
+for (sc in scenarios[2:4])
+ all_scenarios <- all_scenarios %>%
+  rbind(chill_hist_scenario_list[[sc]] %>%
+          cbind(
+            scenario=as.numeric(sc))
+        ) %>%
+  filter(Perc_complete == 100)
+
+# Let's compute the actual 'observed' chill for comparison
+actual_chill <- tempResponse_daily_list(patched_complete,
+                                        latitude=51.4,
+                                        Start_JDay = 305,
+                                        End_JDay = 59,
+                                        models)[[1]] %>%
+  filter(Perc_complete == 100)
+
+ggplot(data = all_scenarios,
+       aes(scenario,
+           Chill_Portions,
+           fill = factor(scenario))) +
+  geom_violin() +
+  ylab("Chill accumulation (Chill Portions)") +
+  xlab("Scenario year") +
+  theme_bw(base_size = 15) +
+  ylim(c(0,90)) +
+  geom_point(data = actual_chill,
+             aes(End_year,
+                 Chill_Portions,
+                 fill = "blue"),
+             col = "blue",
+             show.legend = FALSE) +
+  scale_fill_discrete(name = "Scenario",
+                      breaks = unique(all_scenarios$scenario))
+
+write.csv(actual_chill,"D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_observed_chill_305_59.csv", row.names = FALSE)
+```
+
+```{r}
+temperature_means <- 
+  data.frame(Year = min(patched_complete$Year):max(patched_complete$Year),
+             Tmin = aggregate(patched_complete$Tmin,
+                              FUN = "mean",
+                              by = list(patched_complete$Year))[,2],
+             Tmax=aggregate(patched_complete$Tmax,
+                            FUN = "mean",
+                            by = list(patched_complete$Year))[,2]) %>%
+  mutate(runn_mean_Tmin = runn_mean(Tmin,15),
+         runn_mean_Tmax = runn_mean(Tmax,15))
+
+
+Tmin_regression <- lm(Tmin~Year,
+                      temperature_means)
+
+Tmax_regression <- lm(Tmax~Year,
+                      temperature_means)
+
+temperature_means <- temperature_means %>%
+  mutate(regression_Tmin = Tmin_regression$coefficients[1]+
+           Tmin_regression$coefficients[2]*temperature_means$Year,
+           regression_Tmax = Tmax_regression$coefficients[1]+
+           Tmax_regression$coefficients[2]*temperature_means$Year
+         )
+
+ggplot(temperature_means,
+       aes(Year,
+           Tmin)) + 
+  geom_point() + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                runn_mean_Tmin),
+            lwd = 2,
+            col = "blue") + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                regression_Tmin),
+            lwd = 2,
+            col = "red") +
+  theme_bw(base_size = 15) +
+  ylab("Mean monthly minimum temperature (°C)")
+
+
+ggplot(temperature_means,
+       aes(Year,
+           Tmax)) + 
+  geom_point() + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                runn_mean_Tmax),
+            lwd = 2,
+            col = "blue") + 
+  geom_line(data = temperature_means,
+            aes(Year, 
+                regression_Tmax),
+            lwd = 2,
+            col = "red") +
+  theme_bw(base_size = 15) +
+  ylab("Mean monthly maximum temperature (°C)")
+```

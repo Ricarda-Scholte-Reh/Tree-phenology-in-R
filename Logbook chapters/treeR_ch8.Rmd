@@ -1,0 +1,150 @@
+---
+title: "treeR_ch8"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Making hourly temperatures
+
+## Exercises
+
+1. Choose a location of interest, find out its latitude and produce plots of daily sunrise, sunset and day length.
+- location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
+                        Bislich, 46487 Wesel
+- coordinates: latitude: 51°40'58.4"N
+               longitude: 6°29'46.4"E
+
+```{r}
+require(chillR)
+require(ggplot2)
+require(tidyr)
+
+Days_l8 <- daylength(latitude = 51.4, JDay = 1:365)
+Days_df_l8 <- data.frame(JDay = 1:365,
+                         Sunrise = Days_l8$Sunrise,
+                         Sunset = Days_l8$Sunset,
+                         Daylength = Days_l8$Daylength)
+
+Days_df_l8 <- pivot_longer(Days_df_l8, cols=c(Sunrise:Daylength))
+
+ggplot(Days_df_l8, aes(JDay, value)) +
+        geom_line(lwd = 1.5) +
+        facet_grid(cols = vars(name)) +
+        ylab("Time of Day / Daylength [hours]") +
+        xlab("Day of the year [JDay]") +
+        theme_bw(base_size = 20)
+```
+
+
+2. Produce an hourly dataset, based on idealized daily curves, for the KA_weather dataset (included in ChillR).
+
+```{r}
+# KA_weather
+hourtemp_KA <- stack_hourly_temps(KA_weather, latitude=50.4)
+```
+
+3. Produce empirical temperature curve parameters for the Winters_hours_gaps dataset, and use them to predict hourly values from daily temperatures (this is very similar to the example above, but please make sure you understand what's going on).
+
+```{r}
+empi_curve_l8 <- Empirical_daily_temperature_curve(Winters_hours_gaps)
+
+ggplot(data = empi_curve_l8[1:96, ], aes(Hour, Prediction_coefficient)) +
+  geom_line(lwd = 1.3, col = "red") +
+  facet_grid(rows = vars(Month)) +
+  xlab("Hour of the day") +
+  ylab("Prediction coefficient") +
+  theme_bw(base_size = 20)
+```
+
+```{r}
+coeffs_l8 <- Empirical_daily_temperature_curve(Winters_hours_gaps)
+Winters_daily_l8 <- make_all_day_table(Winters_hours_gaps, input_timestep = "hour")
+Winter_hours_l8 <- Empirical_hourly_temperatures(Winters_daily_l8, coeffs_l8)
+
+
+# simplify the data for easier use
+Winter_hours_l8 <- Winter_hours_l8[ , c("Year", "Month", "Day", "Hour", "Temp")]
+colnames(Winter_hours_l8)[ncol(Winter_hours_l8)] <- "Temp_empirical"
+Winters_ideal_l8 <- stack_hourly_temps(Winters_daily_l8, latitude = 38.5)$hourtemps
+Winters_ideal_l8 <- Winters_ideal_l8[ , c("Year", "Month", "Day", "Hour", "Temp")]
+colnames(Winters_ideal_l8)[ncol(Winters_ideal_l8)] <- "Temp_ideal"
+
+
+# create the "triangular" data set to compare in the end
+Winters_triangle_l8 <- Winters_daily_l8
+Winters_triangle_l8[ , "Hour"] <- 0
+Winters_triangle_l8$Hour[nrow(Winters_triangle_l8)] <- 23
+Winters_triangle_l8[ , "Temp"] <- 0
+Winters_triangle_l8 <- make_all_day_table(Winters_triangle_l8, timestep = "hour")
+colnames(Winters_triangle_l8)[ncol(Winters_triangle_l8)] <- "Temp_triangular"
+
+
+# the following loop will fill in the daily Tmin and Tmax values for every hour
+for (i in 2:nrow(Winters_triangle_l8))
+{if (is.na(Winters_triangle_l8$Tmin[i]))
+  Winters_triangle_l8$Tmin[i] <- Winters_triangle_l8$Tmin[i - 1]
+ if (is.na(Winters_triangle_l8$Tmax[i]))
+   Winters_triangle_l8$Tmax[i] <- Winters_triangle_l8$Tmax[i - 1]}
+
+Winters_triangle_l8$Temp_triangular <- NA
+
+
+# Tmin is fixated to the 6th hour of each day
+Winters_triangle_l8$Temp_triangular[which(Winters_triangle_l8$Hour == 6)] <-
+  Winters_triangle_l8$Tmin[which(Winters_triangle_l8$Hour == 6)]
+
+
+# Tmax is fixated to the 18th hour of each day
+Winters_triangle_l8$Temp_triangular[which(Winters_triangle_l8$Hour == 18)] <-
+  Winters_triangle_l8$Tmax[which(Winters_triangle_l8$Hour == 18)]
+
+
+# the following loop will fill in the gaps between the min and max data in a linear way
+Winters_triangle_l8$Temp_triangular <- interpolate_gaps(Winters_triangle_l8$Temp_triangular)$interp
+Winters_triangle_l8 <- Winters_triangle_l8[ , c("Year", "Month", "Day", "Hour", "Temp_triangular")]
+
+
+# merge all created data frames for easy display
+Winters_temps_l8 <- merge(Winters_hours_gaps, Winter_hours_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+Winters_temps_l8 <- merge(Winters_temps_l8, Winters_triangle_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+Winters_temps_l8 <- merge(Winters_temps_l8, Winters_ideal_l8,
+                          by = c("Year", "Month", "Day", "Hour"))
+
+
+# convert the date into R's date format and reorganize the data frame
+Winters_temps_l8[, "DATE"] <-
+  ISOdate(Winters_temps_l8$Year,
+          Winters_temps_l8$Month,
+          Winters_temps_l8$Day,
+          Winters_temps_l8$Hour)
+
+
+Winters_temps_to_plot_l8 <-
+  Winters_temps_l8[, c("DATE",
+                    "Temp",
+                    "Temp_empirical",
+                    "Temp_triangular",
+                    "Temp_ideal")]
+Winters_temps_to_plot_l8 <- Winters_temps_to_plot_l8[100:200, ]
+Winters_temps_to_plot_l8 <- pivot_longer(Winters_temps_to_plot_l8, cols=Temp:Temp_ideal)
+colnames(Winters_temps_to_plot_l8) <- c("DATE", "Method", "Temperature")
+
+
+ggplot(data = Winters_temps_to_plot_l8, aes(DATE, Temperature, colour = Method)) +
+  geom_line(lwd = 1.3) + ylab("Temperature (°C)") + xlab("Date")
+
+
+
+```
+
+

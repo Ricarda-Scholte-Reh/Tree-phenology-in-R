@@ -1,0 +1,32 @@
+---
+title: "treeR_ch15"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Future temperature scenarios
+
+## Exercise
+1. Briefly describe the differents between the RCPs and the SSPs (you may have to follow some of the links provided above).
+```{r setup, include=FALSE}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+
+
+
+```
+
+

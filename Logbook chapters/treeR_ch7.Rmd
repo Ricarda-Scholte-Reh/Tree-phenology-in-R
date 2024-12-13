@@ -1,0 +1,55 @@
+---
+title: "treeR_ch7"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Chill models
+
+## Exercises
+
+1. Run the "chilling()" function on the Winters_hours_gap dataset.
+```{r}
+# rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(knitr)
+library(pander)
+library(kableExtra)
+
+hourtemps <- Winters_hours_gaps[ , c("Year", "Month", "Day", "Hour", "Temp")]
+?chilling
+
+chilling_l7 <- chilling(make_JDay(hourtemps),
+                   Start_JDay = 90,
+                   End_JDay = 100)
+chilling_l7
+```
+
+2. Create your own temperature-weighting chill model using the "step_model()" function.
+3. Run this model on the Winters_hours_gap dataset using the "tempResponse()" function.
+
+```{r}
+df_l7 = data.frame(
+  lower = c(-1000, 1, 2, 3, 4, 5, 6),
+  upper = c(    1, 2, 3, 4, 5, 6, 1000),
+  weight = c(   0, 1, 2, 3, 2, 1, 0))
+
+step_model_l7 <- step_model(HourTemp=hourtemps$Temp, df=df_l7)
+
+TResp_l7 <- tempResponse(make_JDay(hourtemps),
+                         Start_JDay = 90,
+                         End_JDay = 100,
+                         models = list(Chill_Portions = Dynamic_Model,
+                                       GDH = GDH))
+TResp_l7
+```
+GDH = Growing Degree Days
+

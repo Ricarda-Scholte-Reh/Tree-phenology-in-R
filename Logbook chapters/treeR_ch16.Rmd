@@ -1,0 +1,97 @@
+---
+title: "treeR_ch16"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: true
+---
+
+# Making CMIP6 scenarios
+
+## Exercise
+1. Analyse the historic and future impact of climate change on two agroclimatic metrics of your choice, for the location you've chosen for your earlier analyses.
+```{r}
+rm(list=ls()) # clears the environment from unwanted values etc.
+library(chillR)
+library(tidyverse)
+library(ggplot2)
+library(tibble)
+library(magrittr)
+
+location = c(6.29, 51.40)
+area <- c(52.5, 5, 50.5, 7)
+
+download_cmip6_ecmwfr(scenarios = 'ssp126', 
+                      area =  area,
+                      key = '9d522e37-4b90-46d1-8701-7deadd45032b',
+                      model = 'default',
+                      frequency = 'monthly',
+                      variable = c('Tmin', 'Tmax'),
+                      year_start = 2015,
+                      year_end = 2100)
+
+#download_cmip6_ecmwfr(
+#  scenarios = c("ssp126", "ssp245", "ssp370", "ssp585"), 
+#  area = area,
+#  user = 'write user id here'
+#  key = 'write key here',
+#  model = 'default',
+#  frequency = 'monthly',
+#  variable = c('Tmin', 'Tmax'),
+#  year_start = 2015,
+#  year_end = 2100)
+
+```
+
+
+```{r}
+library(ncdf4)
+library(PCICt)
+
+station <- data.frame(
+  station_name = c("ARCEN AWS"),
+  longitude = c(6.5),
+  latitude = c(51.8))
+
+extracted <- extract_cmip6_data(stations = station)
+
+head(extracted$`ssp126_AWI-CM-1-1-MR`)
+
+
+
+change_scenarios <- 
+  gen_rel_change_scenario(extracted,
+                          scenarios = c(2050, 2085),
+                          reference_period = c(1986:2014),
+                          future_window_width = 30)
+head(change_scenarios)
+
+
+write.csv(change_scenarios, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/all_change_scenarios_ssp126.csv", row.names = FALSE)
+
+change_scenarios <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/all_change_scenarios_ssp126.csv")
+
+
+scen_list <- convert_scen_information(change_scenarios)
+
+scen_frame <- convert_scen_information(scen_list)
+
+scen_list$"ARCEN AWS"$ssp126$`ACCESS-CM2`$'2050'
+
+
+```
+
+
+
+
+
+
+
+
+
