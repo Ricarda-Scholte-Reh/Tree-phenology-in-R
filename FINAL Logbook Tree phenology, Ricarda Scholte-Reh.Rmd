@@ -168,7 +168,7 @@ This logbook will answer the Exercises of the module "Tree phenology analysis in
 
 ```
 
-```{r child = 'treeR_ch12.Rmd'}
+```{r child = 'Logbook chapters/treeR_ch12.Rmd'}
 
 ```
 
@@ -224,7 +224,7 @@ There are no tasks for this chapter.
 
 ```
 
-```{r child = 'treeR_ch19.Rmd'}
+```{r child = 'Logbook chapters/treeR_ch19.Rmd'}
 
 ```
 
