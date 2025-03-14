@@ -1,0 +1,177 @@
+---
+title: "treeR_ch25"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: false
+---
+
+# Chapter 25 Why PLS doesn't always work
+
+1.  Produce chill and heat model sensitivity plots for the location you focused on in previous exercises.
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+library(chillR)
+library(ggplot2)
+library(patchwork)
+library(tidyverse)
+library(colorRamps)
+```
+
+```{r, message = FALSE, warning = FALSE}
+mon <- 1
+ndays <- 31
+tmin <- 1
+tmax <- 8
+latitude <- 51.4
+
+
+weather <- make_all_day_table(
+            data.frame(Year = c(2001, 2001),
+                       Month = c(mon, mon),
+                       Day = c(1, ndays),
+                       Tmin = c(0, 0),
+                       Tmax = c(0, 0))) %>%
+  mutate(Tmin = tmin,
+         Tmax = tmax)
+
+hourly_temps <- stack_hourly_temps(weather,
+                                   latitude = latitude)
+
+CPs <- Dynamic_Model(
+     hourly_temps$hourtemps$Temp)
+
+daily_CPs <- CPs[length(CPs)] / nrow(weather)
+
+# daily_CPs
+
+
+month_range <- c(10, 11, 12, 1, 2, 3)
+
+Tmins <- c(-20:20)
+Tmaxs <- c(-15:30)
+
+mins <- NA
+maxs <- NA
+CP <- NA
+month <- NA
+temp_model <- Dynamic_Model
+
+for(mon in month_range)
+    {days_month <- as.numeric(
+      difftime( ISOdate(2002,
+                        mon + 1,
+                        1),
+                ISOdate(2002,
+                        mon,
+                        1)))
+    
+    if(mon == 12) days_month <- 31
+    
+    weather <- make_all_day_table(
+                data.frame(Year = c(2001, 2001),
+                           Month = c(mon, mon),
+                           Day = c(1, days_month),
+                           Tmin = c(0, 0),
+                           Tmax = c(0, 0)))
+    
+    for(tmin in Tmins)
+      for(tmax in Tmaxs)
+        if(tmax >= tmin)
+          {
+          hourtemps <- weather %>%
+            mutate(Tmin = tmin,
+                   Tmax = tmax) %>%
+            stack_hourly_temps(latitude = latitude) %>% 
+            pluck("hourtemps", "Temp")
+
+          CP <- c(CP,
+                  tail(do.call(temp_model,
+                               list(hourtemps)), 1) /
+                    days_month)
+          mins <- c(mins, tmin)
+          maxs <- c(maxs, tmax)
+          month <- c(month, mon)
+        }
+}
+
+results <- data.frame(Month = month,
+                      Tmin = mins,
+                      Tmax = maxs,
+                      CP)
+
+results <- results[!is.na(results$Month), ]
+
+
+write.csv(results,
+          "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/data ch20-25/model_sensitivity_development.csv",
+          row.names = FALSE)
+
+results$Month_names <- factor(results$Month,
+                              levels = month_range,
+                              labels = month.name[month_range])  
+
+DM_sensitivity <- ggplot(results,
+                         aes(x = Tmin,
+                             y = Tmax,
+                             fill = CP)) +
+  geom_tile() +
+  scale_fill_gradientn(colours = alpha(matlab.like(15),
+                                       alpha = .5),
+                       name = "Chill/day (CP)") +
+  ylim(min(results$Tmax),
+       max(results$Tmax)) +
+  ylim(min(results$Tmin),
+       max(results$Tmin))
+
+DM_sensitivity
+
+DM_sensitivity <- DM_sensitivity +
+  facet_wrap(vars(Month_names)) +
+  ylim(min(results$Tmax),
+       max(results$Tmax)) +
+  ylim(min(results$Tmin),
+       max(results$Tmin))
+
+DM_sensitivity
+```
+
+```{r, message = FALSE, warning = FALSE}
+latitude <- 51.4
+
+month_range <- c(10, 11, 12, 1, 2, 3)
+
+temperatures <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv") %>% 
+  filter(Month %in% month_range) %>%
+  mutate(Month_names =
+           factor(Month,
+                  levels = c(10, 11, 12, 1, 2, 3),
+                  labels = c("October", "November", "December",
+                             "January", "February", "March")))
+
+temperatures[which(temperatures$Tmax < temperatures$Tmin),
+             c("Tmax", "Tmin")] <- NA
+
+DM_sensitivity +
+  geom_point(data = temperatures,
+             aes(x = Tmin,
+                 y = Tmax,
+                 fill = NULL,
+                 color = "Temperature"),
+             size = 0.2) +
+  facet_wrap(vars(Month_names)) +
+  scale_color_manual(values = "black",
+                     labels = "Daily temperature \nextremes (°C)",
+                     name = "Observed at site" ) +
+  guides(fill = guide_colorbar(order = 1),
+         color = guide_legend(order = 2)) +
+  ylab("Tmax (°C)") +
+  xlab("Tmin (°C)") + 
+  theme_bw(base_size = 15) 
+```

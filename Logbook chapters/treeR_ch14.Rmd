@@ -1,5 +1,5 @@
 ---
-title: "treeR_ch13"
+title: "treeR_ch14"
 author: "Ricarda Scholte-Reh"
 date: "2024-10-12"
 homepage: "https://Ricarda-Scholte-Reh.github.io"
@@ -12,38 +12,33 @@ output:
     number_sections: true
 ---
 
-# Historic temperature scenarios
-
-## Exercise
+# Chapter 14 Historic temperature scenarios
 
 1.  For the location you chose for previous exercises, produce historic temperature scenarios representing several years of the historic record (your choice).
 
-```{r}
-rm(list=ls()) # clears the environment from unwanted values etc.
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(tidyverse)
 library(ggplot2)
 library(tibble)
 library(magrittr)
+```
 
+```{r, warning = FALSE}
 patched_complete <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv")
 
-# we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
 Temp <- patched_complete %>%
-  temperature_generation(years = c(1998,2009),
+  temperature_generation(years = c(1998,2005),
                          sim_years = c(2001,2100))
 
 change_scenario <- data.frame(Tmin = rep(2,12),
                               Tmax = rep(2,12))
-change_scenario
+# change_scenario
 
 Temp_2 <- temperature_generation(KA_weather,
                                  years = c(1998,2005),
                                  sim_years = c(2001,2100),
                                  temperature_scenario = change_scenario)
-
-# As before, we'll make a data.frame that contains all
-# our data, so we can take a look at it.
 
 Temperature_scenarios <- KA_weather %>%
   filter(Year %in% 1998:2005) %>%
@@ -77,47 +72,43 @@ ggplot(data = Temperature_scenarios,
   scale_x_date(date_labels = "%b")
 ```
 
-```{r}
+```{r, warning = FALSE}
 summary(patched_complete)
-# 1994 bis 2020
 
+scenario_1990 <- temperature_scenario_from_records(weather = patched_complete,
+                                                   year = 1990)
 
-scenario_1995 <- temperature_scenario_from_records(weather = patched_complete,
-                                                   year = 1995)
-temps_1995 <- temperature_generation(weather = patched_complete,
-                                     years = c(1994,2020),
+temps_1990 <- temperature_generation(weather = patched_complete,
+                                     years = c(1990,2020),
                                      sim_years = c(2001,2100),
-                                     temperature_scenario = scenario_1995)
-median(patched_complete$Year)
+                                     temperature_scenario = scenario_1990)
 
-scenario_2007 <- temperature_scenario_from_records(weather = patched_complete,
-                                                   year = 2007)
+scenario_2005 <- temperature_scenario_from_records(weather = patched_complete,
+                                                   year = 2005)
 
 relative_scenario <- temperature_scenario_baseline_adjustment(
-  baseline = scenario_2007,
-  temperature_scenario = scenario_1995)
+  baseline = scenario_2005,
+  temperature_scenario = scenario_1990)
 
-temps_1980<-temperature_generation(weather = patched_complete,
-                                   years = c(1994,2020),
+temps_1990<-temperature_generation(weather = patched_complete,
+                                   years = c(1990,2020),
                                    sim_years = c(2001,2100),
                                    temperature_scenario = relative_scenario)
 
-# creating all wanted scenarios
 all_past_scenarios <- temperature_scenario_from_records(
   weather = patched_complete,
-  year = c(1995,
-           2000,
-           2005,
-           2010,
-           2020))
+  year = c(1990,
+           1997,
+           2003,
+           2010))
 
 adjusted_scenarios <- temperature_scenario_baseline_adjustment(
-  baseline = scenario_2007,
+  baseline = scenario_2005,
   temperature_scenario = all_past_scenarios)
 
 all_past_scenario_temps <- temperature_generation(
   weather = patched_complete,
-  years = c(1994,2020),
+  years = c(1990,2020),
   sim_years = c(2001,2100),
   temperature_scenario = adjusted_scenarios)
 
@@ -149,7 +140,9 @@ chill_hist_scenario_list <- lapply(chill_hist_scenario_list,
                                      filter(Perc_complete == 100))
 
 save_temperature_scenarios(chill_hist_scenario_list, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters", "Wesel_hist_chill_305_59")
+```
 
+```{r}
 scenarios <- names(chill_hist_scenario_list)[1:4]
 
 all_scenarios <- chill_hist_scenario_list[[scenarios[1]]] %>%

@@ -12,30 +12,49 @@ output:
     number_sections: true
 ---
 
-# Filling gaps in temperature records
+# Chapter 11 Filling gaps in temperature records
 
-## Exercises
+Before the answers of the exercises for this chapter start, there will be dates added to the dataset because the first 4 years are missing for a reason. So the get added here manually to answer all following exercises correctly.
 
-1. Use chillR functions to find out how many gaps you have in this dataset (even if you have none, please still follow all further steps).
-```{r}
-rm(list=ls()) # clears the environment from unwanted values etc.
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(tidyverse)
 library(ggplot2)
 library(tibble)
 library(magrittr)
+```
 
+```{r}
 cleaned_weather_WES <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_chillR_weather.csv")
 
-#cleaned_weather_WES <- cleaned_weather_WES %>% make_all_day_table()
+start_date <- as.Date("1990-01-01")
+end_date <- as.Date("1993-12-31")
+date_sequence <- seq.Date(start_date, end_date, by = "day")
 
+new_rows <- data.frame(
+  Date = as.POSIXct(paste(date_sequence, "12:00:00")),
+  Year = as.numeric(format(date_sequence, "%Y")),
+  Month = as.numeric(format(date_sequence, "%m")),
+  Day = as.numeric(format(date_sequence, "%d")),
+  Tmin = NA,
+  Tmax = NA,
+  Tmean = NA,
+  Prec = NA
+)
+cleaned_weather_WES <- rbind(new_rows, cleaned_weather_WES)
+```
+
+1.  Use chillR functions to find out how many gaps you have in this dataset (even if you have none, please still follow all further steps).
+
+```{r}
 Wesel_QC <- fix_weather(cleaned_weather_WES)$QC
 
 table(is.na(cleaned_weather_WES$Tmin))
 Wesel_QC
 ```
 
-2. Create a list of the 25 closest weather stations using the handle_gsod function.
+2.  Create a list of the 25 closest weather stations using the handle_gsod function.
+
 ```{r}
 station_list <- handle_gsod(action = "list_stations",
                             location = c(6.29, 51.40),
@@ -44,17 +63,20 @@ station_list <- slice(station_list, 1:25)
 station_list
 ```
 
-3. Identify suitable weather stations for patching gaps.
+3.  Identify suitable weather stations for patching gaps.
+
 The stations 3, 5, 11 are suitable.
 
-4. Download weather data for promising stations, convert them to ChillR format and compile them in a list
+4.  Download weather data for promising stations, convert them to ChillR format and compile them in a list
+
 ```{r}
 patch_weather <- handle_gsod(action = "download_weather",
                              location = as.character(station_list$chillR_code[c(3, 5, 11)]),
                              time_interval = c(1990,2020)) %>% handle_gsod()
 ```
 
-5. Use the patch_daily_temperatures function to fill gaps
+5.  Use the patch_daily_temperatures function to fill gaps
+
 ```{r}
 patched <- patch_daily_temperatures(weather = cleaned_weather_WES,
                                     patch_weather = patch_weather,
@@ -62,17 +84,16 @@ patched <- patch_daily_temperatures(weather = cleaned_weather_WES,
                                     max_stdev_bias = 2)
 ```
 
-6. Investigate the results - have all gaps been filled?
+6.  Investigate the results - have all gaps been filled?
+
 ```{r}
 patched$statistics[[1]]
 patched$statistics[[2]]
 patched$statistics[[3]]
-
-#post_patch_stats <- fix_weather(patched)$QC
-
 ```
 
-7. If necessary, repeat until you have a dataset you can work with in further analyses.
+7.  If necessary, repeat until you have a dataset you can work with in further analyses.
+
 ```{r}
 station_list
 

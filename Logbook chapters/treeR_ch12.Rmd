@@ -12,18 +12,18 @@ output:
     number_sections: true
 ---
 
-# Generating temperature scenarios
+# Chapter 12 Generating temperature scenarios
 
-## Exercises
 1.  For the location you chose for your earlier analyses, use chillR's weather generator to produce 100 years of synthetic temperature data.
-```{r}
-#rm(list=ls()) # clears the environment from unwanted values etc.
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(tidyverse)
 library(ggplot2)
 library(tibble)
 library(magrittr)
+```
 
+```{r}
 patched_complete <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv")
 
 # we simulate here with the data form 1998 to 2009 100 times how the weather could have been in this time
@@ -79,7 +79,7 @@ chill_observed <- Temperatures %>%
   
 chill_simulated <- Temperatures %>%
   filter(Data_source == "simulated") %>%
-  stack_hourly_temps(latitude = 50.4) %>%
+  stack_hourly_temps(latitude = 51.4) %>%
   chilling(Start_JDay = 305,
            End_JDay = 59)
   

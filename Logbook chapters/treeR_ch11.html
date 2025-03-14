@@ -1509,6 +1509,15 @@ border-radius: 0px;
 temperature records</h1>
 <div id="exercises" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Exercises</h2>
+<p>Well, you could certainly adjust the code in a way that reflects a
+1994 start date. This may require changes in several places though, to
+make sure that the code reflects the correct baseline year.
+Alternatively, you can make an adjustment before applying the patching
+procedure. You could create a mini data.frame that only consists of a
+line for 1st January 1990 and attach this to the weather file you
+downloaded (using rbind; make sure that the column names are identical).
+Then you can run the patching procedure as before. The function should
+then look for data for 1990-2020 for patching the gaps.</p>
 <ol style="list-style-type: decimal">
 <li>Use chillR functions to find out how many gaps you have in this
 dataset (even if you have none, please still follow all further
@@ -1543,71 +1552,96 @@ library(magrittr)</code></pre>
 ##     extract</code></pre>
 <pre class="r"><code>cleaned_weather_WES &lt;- read.csv(&quot;D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_chillR_weather.csv&quot;)
 
-#cleaned_weather_WES &lt;- cleaned_weather_WES %&gt;% make_all_day_table()
+# da die Tabelle erst bei 1994 beginnt erweitere ich die Tabelle hier damit vollständige Daten für die weiteren Aufgaben vorhanden sind
+start_date &lt;- as.Date(&quot;1990-01-01&quot;)
+end_date &lt;- as.Date(&quot;1993-12-31&quot;)
+date_sequence &lt;- seq.Date(start_date, end_date, by = &quot;day&quot;)
+
+new_rows &lt;- data.frame(
+  Date = as.POSIXct(paste(date_sequence, &quot;12:00:00&quot;)),
+  Year = as.numeric(format(date_sequence, &quot;%Y&quot;)),
+  Month = as.numeric(format(date_sequence, &quot;%m&quot;)),
+  Day = as.numeric(format(date_sequence, &quot;%d&quot;)),
+  Tmin = NA,
+  Tmax = NA,
+  Tmean = NA,
+  Prec = NA
+)
+cleaned_weather_WES &lt;- rbind(new_rows, cleaned_weather_WES)
+# summary(cleaned_weather_WES)
+
 
 Wesel_QC &lt;- fix_weather(cleaned_weather_WES)$QC
 
 table(is.na(cleaned_weather_WES$Tmin))</code></pre>
 <pre><code>## 
 ## FALSE  TRUE 
-##  9022   840</code></pre>
+##  9022  2301</code></pre>
 <pre class="r"><code>Wesel_QC</code></pre>
 <pre><code>##       Season End_year Season_days Data_days Missing_Tmin Missing_Tmax
-## 1  1993/1994     1994         365       365          270          270
-## 2  1994/1995     1995         365       365          161          161
-## 3  1995/1996     1996         366       366          128          128
-## 4  1996/1997     1997         365       365          152          152
-## 5  1997/1998     1998         365       365           46           46
-## 6  1998/1999     1999         365       365            6            6
-## 7  1999/2000     2000         366       366            0            0
-## 8  2000/2001     2001         365       365           31           31
-## 9  2001/2002     2002         365       365            4            4
-## 10 2002/2003     2003         365       365            2            2
-## 11 2003/2004     2004         366       366            2            2
-## 12 2004/2005     2005         365       365           11           11
-## 13 2005/2006     2006         365       365            2            2
-## 14 2006/2007     2007         365       365            4            4
-## 15 2007/2008     2008         366       366            5            5
-## 16 2008/2009     2009         365       365            0            0
-## 17 2009/2010     2010         365       365            0            0
-## 18 2010/2011     2011         365       365            0            0
-## 19 2011/2012     2012         366       366            4            4
-## 20 2012/2013     2013         365       365            5            5
-## 21 2013/2014     2014         365       365            2            2
-## 22 2014/2015     2015         365       365            2            2
-## 23 2015/2016     2016         366       366            0            0
-## 24 2016/2017     2017         365       365            0            0
-## 25 2017/2018     2018         365       365            2            2
-## 26 2018/2019     2019         365       365            0            0
-## 27 2019/2020     2020         366       366            1            1
+## 1  1989/1990     1990         365       365          365          365
+## 2  1990/1991     1991         365       365          365          365
+## 3  1991/1992     1992         366       366          366          366
+## 4  1992/1993     1993         365       365          365          365
+## 5  1993/1994     1994         365       365          270          270
+## 6  1994/1995     1995         365       365          161          161
+## 7  1995/1996     1996         366       366          128          128
+## 8  1996/1997     1997         365       365          152          152
+## 9  1997/1998     1998         365       365           46           46
+## 10 1998/1999     1999         365       365            6            6
+## 11 1999/2000     2000         366       366            0            0
+## 12 2000/2001     2001         365       365           31           31
+## 13 2001/2002     2002         365       365            4            4
+## 14 2002/2003     2003         365       365            2            2
+## 15 2003/2004     2004         366       366            2            2
+## 16 2004/2005     2005         365       365           11           11
+## 17 2005/2006     2006         365       365            2            2
+## 18 2006/2007     2007         365       365            4            4
+## 19 2007/2008     2008         366       366            5            5
+## 20 2008/2009     2009         365       365            0            0
+## 21 2009/2010     2010         365       365            0            0
+## 22 2010/2011     2011         365       365            0            0
+## 23 2011/2012     2012         366       366            4            4
+## 24 2012/2013     2013         365       365            5            5
+## 25 2013/2014     2014         365       365            2            2
+## 26 2014/2015     2015         365       365            2            2
+## 27 2015/2016     2016         366       366            0            0
+## 28 2016/2017     2017         365       365            0            0
+## 29 2017/2018     2018         365       365            2            2
+## 30 2018/2019     2019         365       365            0            0
+## 31 2019/2020     2020         366       366            1            1
 ##    Incomplete_days Perc_complete
-## 1              270          26.0
-## 2              161          55.9
-## 3              128          65.0
-## 4              152          58.4
-## 5               46          87.4
-## 6                6          98.4
-## 7                0         100.0
-## 8               31          91.5
-## 9                4          98.9
-## 10               2          99.5
-## 11               2          99.5
-## 12              11          97.0
-## 13               2          99.5
-## 14               4          98.9
-## 15               5          98.6
-## 16               0         100.0
-## 17               0         100.0
-## 18               0         100.0
-## 19               4          98.9
-## 20               5          98.6
-## 21               2          99.5
-## 22               2          99.5
-## 23               0         100.0
-## 24               0         100.0
+## 1              365           0.0
+## 2              365           0.0
+## 3              366           0.0
+## 4              365           0.0
+## 5              270          26.0
+## 6              161          55.9
+## 7              128          65.0
+## 8              152          58.4
+## 9               46          87.4
+## 10               6          98.4
+## 11               0         100.0
+## 12              31          91.5
+## 13               4          98.9
+## 14               2          99.5
+## 15               2          99.5
+## 16              11          97.0
+## 17               2          99.5
+## 18               4          98.9
+## 19               5          98.6
+## 20               0         100.0
+## 21               0         100.0
+## 22               0         100.0
+## 23               4          98.9
+## 24               5          98.6
 ## 25               2          99.5
-## 26               0         100.0
-## 27               1          99.7</code></pre>
+## 26               2          99.5
+## 27               0         100.0
+## 28               0         100.0
+## 29               2          99.5
+## 30               0         100.0
+## 31               1          99.7</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Create a list of the 25 closest weather stations using the
 handle_gsod function.</li>
@@ -1661,16 +1695,16 @@ ChillR format and compile them in a list</p></li>
 </ol>
 <pre class="r"><code>patched$statistics[[1]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin    -0.703      1.151     36         804
-## Tmax     0.251      0.731     36         804</code></pre>
+## Tmin    -0.703      1.151     36        2265
+## Tmax     0.251      0.731     36        2265</code></pre>
 <pre class="r"><code>patched$statistics[[2]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin    -0.541      1.293      2         802
-## Tmax     0.078      1.036      2         802</code></pre>
+## Tmin    -0.541      1.293   1098        1167
+## Tmax     0.078      1.036   1098        1167</code></pre>
 <pre class="r"><code>patched$statistics[[3]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin    -1.206      1.705      0         802
-## Tmax     0.220      1.015    256         546</code></pre>
+## Tmin    -1.206      1.705      0        1167
+## Tmax     0.220      1.015    256         911</code></pre>
 <pre class="r"><code>#post_patch_stats &lt;- fix_weather(patched)$QC</code></pre>
 <ol start="7" style="list-style-type: decimal">
 <li>If necessary, repeat until you have a dataset you can work with in
@@ -1732,57 +1766,61 @@ further analyses.</li>
 
 patched_2$statistics[[1]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin     0.665      1.179    831           9
-## Tmax     0.165      0.873    831           9</code></pre>
+## Tmin     0.665      1.179   2286          15
+## Tmax     0.165      0.873   2286          15</code></pre>
 <pre class="r"><code>patched_2$statistics[[6]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin        NA         NA      0           4
-## Tmax        NA         NA      0           4</code></pre>
+## Tmin     0.459      1.428      0           4
+## Tmax    -0.109      1.217      0           4</code></pre>
 <pre class="r"><code>patched_2$statistics[[7]]</code></pre>
 <pre><code>##      mean_bias stdev_bias filled gaps_remain
-## Tmin    -0.299      1.224      3           1
-## Tmax    -0.015      1.174      3           1</code></pre>
+## Tmin    -0.302      1.258      3           1
+## Tmax    -0.018      1.211      3           1</code></pre>
 <pre class="r"><code>post_patch_stats_2 &lt;- fix_weather(patched_2)$QC
 post_patch_stats_2</code></pre>
 <pre><code>##       Season End_year Season_days Data_days Missing_Tmin Missing_Tmax
-## 1  1993/1994     1994         365       365            0            0
-## 2  1994/1995     1995         365       365            0            0
-## 3  1995/1996     1996         366       366            0            0
-## 4  1996/1997     1997         365       365            0            0
-## 5  1997/1998     1998         365       365            0            0
-## 6  1998/1999     1999         365       365            1            1
-## 7  1999/2000     2000         366       366            0            0
-## 8  2000/2001     2001         365       365            0            0
-## 9  2001/2002     2002         365       365            0            0
-## 10 2002/2003     2003         365       365            0            0
-## 11 2003/2004     2004         366       366            0            0
-## 12 2004/2005     2005         365       365            0            0
-## 13 2005/2006     2006         365       365            0            0
-## 14 2006/2007     2007         365       365            0            0
-## 15 2007/2008     2008         366       366            0            0
-## 16 2008/2009     2009         365       365            0            0
-## 17 2009/2010     2010         365       365            0            0
-## 18 2010/2011     2011         365       365            0            0
-## 19 2011/2012     2012         366       366            0            0
-## 20 2012/2013     2013         365       365            0            0
-## 21 2013/2014     2014         365       365            0            0
-## 22 2014/2015     2015         365       365            0            0
-## 23 2015/2016     2016         366       366            0            0
-## 24 2016/2017     2017         365       365            0            0
-## 25 2017/2018     2018         365       365            0            0
-## 26 2018/2019     2019         365       365            0            0
-## 27 2019/2020     2020         366       366            0            0
+## 1  1989/1990     1990         365       365            0            0
+## 2  1990/1991     1991         365       365            0            0
+## 3  1991/1992     1992         366       366            0            0
+## 4  1992/1993     1993         365       365            0            0
+## 5  1993/1994     1994         365       365            0            0
+## 6  1994/1995     1995         365       365            0            0
+## 7  1995/1996     1996         366       366            0            0
+## 8  1996/1997     1997         365       365            0            0
+## 9  1997/1998     1998         365       365            0            0
+## 10 1998/1999     1999         365       365            1            1
+## 11 1999/2000     2000         366       366            0            0
+## 12 2000/2001     2001         365       365            0            0
+## 13 2001/2002     2002         365       365            0            0
+## 14 2002/2003     2003         365       365            0            0
+## 15 2003/2004     2004         366       366            0            0
+## 16 2004/2005     2005         365       365            0            0
+## 17 2005/2006     2006         365       365            0            0
+## 18 2006/2007     2007         365       365            0            0
+## 19 2007/2008     2008         366       366            0            0
+## 20 2008/2009     2009         365       365            0            0
+## 21 2009/2010     2010         365       365            0            0
+## 22 2010/2011     2011         365       365            0            0
+## 23 2011/2012     2012         366       366            0            0
+## 24 2012/2013     2013         365       365            0            0
+## 25 2013/2014     2014         365       365            0            0
+## 26 2014/2015     2015         365       365            0            0
+## 27 2015/2016     2016         366       366            0            0
+## 28 2016/2017     2017         365       365            0            0
+## 29 2017/2018     2018         365       365            0            0
+## 30 2018/2019     2019         365       365            0            0
+## 31 2019/2020     2020         366       366            0            0
 ##    Incomplete_days Perc_complete
 ## 1                0         100.0
 ## 2                0         100.0
 ## 3                0         100.0
 ## 4                0         100.0
 ## 5                0         100.0
-## 6                1          99.7
+## 6                0         100.0
 ## 7                0         100.0
 ## 8                0         100.0
 ## 9                0         100.0
-## 10               0         100.0
+## 10               1          99.7
 ## 11               0         100.0
 ## 12               0         100.0
 ## 13               0         100.0
@@ -1799,7 +1837,11 @@ post_patch_stats_2</code></pre>
 ## 24               0         100.0
 ## 25               0         100.0
 ## 26               0         100.0
-## 27               0         100.0</code></pre>
+## 27               0         100.0
+## 28               0         100.0
+## 29               0         100.0
+## 30               0         100.0
+## 31               0         100.0</code></pre>
 <pre class="r"><code>patched_complete &lt;- patched_2$weather %&gt;% make_all_day_table()
 
 Tmin_int &lt;- interpolate_gaps(patched_complete[,&quot;Tmin&quot;])
@@ -1814,33 +1856,37 @@ patched_complete &lt;- patched_complete %&gt;% mutate(Tmax = Tmax_int$interp,
 
 fix_weather(patched_complete)$QC</code></pre>
 <pre><code>##       Season End_year Season_days Data_days Missing_Tmin Missing_Tmax
-## 1  1993/1994     1994         365       365            0            0
-## 2  1994/1995     1995         365       365            0            0
-## 3  1995/1996     1996         366       366            0            0
-## 4  1996/1997     1997         365       365            0            0
-## 5  1997/1998     1998         365       365            0            0
-## 6  1998/1999     1999         365       365            0            0
-## 7  1999/2000     2000         366       366            0            0
-## 8  2000/2001     2001         365       365            0            0
-## 9  2001/2002     2002         365       365            0            0
-## 10 2002/2003     2003         365       365            0            0
-## 11 2003/2004     2004         366       366            0            0
-## 12 2004/2005     2005         365       365            0            0
-## 13 2005/2006     2006         365       365            0            0
-## 14 2006/2007     2007         365       365            0            0
-## 15 2007/2008     2008         366       366            0            0
-## 16 2008/2009     2009         365       365            0            0
-## 17 2009/2010     2010         365       365            0            0
-## 18 2010/2011     2011         365       365            0            0
-## 19 2011/2012     2012         366       366            0            0
-## 20 2012/2013     2013         365       365            0            0
-## 21 2013/2014     2014         365       365            0            0
-## 22 2014/2015     2015         365       365            0            0
-## 23 2015/2016     2016         366       366            0            0
-## 24 2016/2017     2017         365       365            0            0
-## 25 2017/2018     2018         365       365            0            0
-## 26 2018/2019     2019         365       365            0            0
-## 27 2019/2020     2020         366       366            0            0
+## 1  1989/1990     1990         365       365            0            0
+## 2  1990/1991     1991         365       365            0            0
+## 3  1991/1992     1992         366       366            0            0
+## 4  1992/1993     1993         365       365            0            0
+## 5  1993/1994     1994         365       365            0            0
+## 6  1994/1995     1995         365       365            0            0
+## 7  1995/1996     1996         366       366            0            0
+## 8  1996/1997     1997         365       365            0            0
+## 9  1997/1998     1998         365       365            0            0
+## 10 1998/1999     1999         365       365            0            0
+## 11 1999/2000     2000         366       366            0            0
+## 12 2000/2001     2001         365       365            0            0
+## 13 2001/2002     2002         365       365            0            0
+## 14 2002/2003     2003         365       365            0            0
+## 15 2003/2004     2004         366       366            0            0
+## 16 2004/2005     2005         365       365            0            0
+## 17 2005/2006     2006         365       365            0            0
+## 18 2006/2007     2007         365       365            0            0
+## 19 2007/2008     2008         366       366            0            0
+## 20 2008/2009     2009         365       365            0            0
+## 21 2009/2010     2010         365       365            0            0
+## 22 2010/2011     2011         365       365            0            0
+## 23 2011/2012     2012         366       366            0            0
+## 24 2012/2013     2013         365       365            0            0
+## 25 2013/2014     2014         365       365            0            0
+## 26 2014/2015     2015         365       365            0            0
+## 27 2015/2016     2016         366       366            0            0
+## 28 2016/2017     2017         365       365            0            0
+## 29 2017/2018     2018         365       365            0            0
+## 30 2018/2019     2019         365       365            0            0
+## 31 2019/2020     2020         366       366            0            0
 ##    Incomplete_days Perc_complete
 ## 1                0           100
 ## 2                0           100
@@ -1868,7 +1914,81 @@ fix_weather(patched_complete)$QC</code></pre>
 ## 24               0           100
 ## 25               0           100
 ## 26               0           100
-## 27               0           100</code></pre>
+## 27               0           100
+## 28               0           100
+## 29               0           100
+## 30               0           100
+## 31               0           100</code></pre>
+<pre class="r"><code>fix_QC &lt;- fix_weather(patched_complete)$QC
+fix_QC</code></pre>
+<pre><code>##       Season End_year Season_days Data_days Missing_Tmin Missing_Tmax
+## 1  1989/1990     1990         365       365            0            0
+## 2  1990/1991     1991         365       365            0            0
+## 3  1991/1992     1992         366       366            0            0
+## 4  1992/1993     1993         365       365            0            0
+## 5  1993/1994     1994         365       365            0            0
+## 6  1994/1995     1995         365       365            0            0
+## 7  1995/1996     1996         366       366            0            0
+## 8  1996/1997     1997         365       365            0            0
+## 9  1997/1998     1998         365       365            0            0
+## 10 1998/1999     1999         365       365            0            0
+## 11 1999/2000     2000         366       366            0            0
+## 12 2000/2001     2001         365       365            0            0
+## 13 2001/2002     2002         365       365            0            0
+## 14 2002/2003     2003         365       365            0            0
+## 15 2003/2004     2004         366       366            0            0
+## 16 2004/2005     2005         365       365            0            0
+## 17 2005/2006     2006         365       365            0            0
+## 18 2006/2007     2007         365       365            0            0
+## 19 2007/2008     2008         366       366            0            0
+## 20 2008/2009     2009         365       365            0            0
+## 21 2009/2010     2010         365       365            0            0
+## 22 2010/2011     2011         365       365            0            0
+## 23 2011/2012     2012         366       366            0            0
+## 24 2012/2013     2013         365       365            0            0
+## 25 2013/2014     2014         365       365            0            0
+## 26 2014/2015     2015         365       365            0            0
+## 27 2015/2016     2016         366       366            0            0
+## 28 2016/2017     2017         365       365            0            0
+## 29 2017/2018     2018         365       365            0            0
+## 30 2018/2019     2019         365       365            0            0
+## 31 2019/2020     2020         366       366            0            0
+##    Incomplete_days Perc_complete
+## 1                0           100
+## 2                0           100
+## 3                0           100
+## 4                0           100
+## 5                0           100
+## 6                0           100
+## 7                0           100
+## 8                0           100
+## 9                0           100
+## 10               0           100
+## 11               0           100
+## 12               0           100
+## 13               0           100
+## 14               0           100
+## 15               0           100
+## 16               0           100
+## 17               0           100
+## 18               0           100
+## 19               0           100
+## 20               0           100
+## 21               0           100
+## 22               0           100
+## 23               0           100
+## 24               0           100
+## 25               0           100
+## 26               0           100
+## 27               0           100
+## 28               0           100
+## 29               0           100
+## 30               0           100
+## 31               0           100</code></pre>
+<pre class="r"><code>table(is.na(patched_complete$Tmin))</code></pre>
+<pre><code>## 
+## FALSE 
+## 11323</code></pre>
 <pre class="r"><code>write.csv(patched_complete, &quot;D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv&quot;, row.names = FALSE)</code></pre>
 </div>
 </div>

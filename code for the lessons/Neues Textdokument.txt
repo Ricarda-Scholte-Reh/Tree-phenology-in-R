@@ -1,175 +1,281 @@
+rm(list=ls())
+
 require(chillR)
-
-# demonstration of tidyverse functions
-library(tidyverse)
-
-#tibbles
-dat <- data.frame(a = c(1, 2, 3),
-                  b = c(4, 5, 6))
-dat
-d <- as_tibble(dat)
-d
-
-#pipes
-d %>% sum()
+require(tidyverse)
 
 
-#tidyr functions
-KAw <- as_tibble(KA_weather[1:10, ])
-KAw
+# Here's the call from the earlier lesson. We don't have to run this again.
+Temp <- temperature_generation(KA_weather,
+                               years = c(1998, 2005),
+                               sim_years = c(2001, 2100))
+
+# Now we make a temperature scenario that raises all temperatures by 2°C
+
+change_scenario <- data.frame(Tmin = rep(2, 12),
+                              Tmax = rep(2, 12))
+
+change_scenario
 
 
-# pivot_longer
-KAwlong <- KAw %>% pivot_longer(cols = Tmax:Tmin)
-KAwlong
+Temp_2 <- temperature_generation(KA_weather,
+                                 years = c(1998, 2005),
+                                 sim_years = c(2001, 2100),
+                                 temperature_scenario = change_scenario)
 
-# pivot_wider
-KAwwide <- KAwlong %>% pivot_wider(names_from = name,
-                                   values_from = value) 
-KAwwide <- KAwlong %>% pivot_wider() 
-KAwwide
+# As before, we'll make a data.frame that contains all
+# our data, so we can take a look at it.
 
-
-KAw[, c("Year","Month","Day")]
-
-# select
-KAw %>% select(c(Month, Day, Tmax))
-KAw %>% select(c(Month:Tmax))
-KAw %>% 
-  select(c(Month:Tmax)) %>%
-  sum()
-
-
-# filter
-KAw[which(KAw$Tmax>10),]
-
-KAw %>% filter(Tmax>10)
-
-# mutate
-KAw_K <- KAw %>% 
-  mutate(Tmax_K = Tmax + 273.15,
-         Tmin_K = Tmin + 273.15)
-KAw_K
-
-KAw_K <- KAw_K %>% 
-  mutate(Tmin_K = NULL, 
-         Tmax_K = NULL)
-KAw_K
+Temperature_scenarios <- KA_weather %>%
+  filter(Year %in% 1998:2005) %>%
+  cbind(Data_source = "observed") %>%
+  rbind(Temp[[1]] %>%
+          select(c(Year, Month, Day, Tmin, Tmax)) %>%
+          cbind(Data_source = "simulated")
+        ) %>%
+  rbind(Temp_2[[1]] %>%
+          select(c(Year, Month, Day, Tmin, Tmax)) %>%
+          cbind(Data_source = "Warming_2C")
+        ) %>%
+  mutate(Date = as.Date(ISOdate(2000,
+                                Month,
+                                Day)))
 
 
+ggplot(data = Temperature_scenarios, 
+       aes(Date, Tmin)) +
+  geom_smooth(aes(colour = factor(Year))) +
+  facet_wrap(vars(Data_source)) +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  scale_x_date(date_labels = "%b")
 
-# arrange
-KAw %>% 
-  arrange(Tmax,
-          Tmin)
-
-KAw %>% arrange(desc(Tmax),
-                Tmin)
-
-KA_weather %>% arrange(desc(Tmax),
-                       Tmin)
-
-# LOOPS
-# for loops
-
-# repeat the same code three times
-for (i in 1:3) 
-  print("Hello")
-
-# change variable within loop
-#addition <- 1
+ggplot(data = Temperature_scenarios,
+       aes(Date,Tmax)) +
+  geom_smooth(aes(colour = factor(Year))) +
+  facet_wrap(vars(Data_source)) +
+  theme_bw(base_size = 15) +
+  theme(legend.position = "none") +
+  scale_x_date(date_labels = "%b")
 
 
-for (i in 1:3)
-{
-  if (i == 1) addition <- 1
-  addition <- addition + 1
-  print(addition)
-}
+# download weather station list for the vicinity of Bonn
+station_list <- handle_gsod(action = "list_stations",
+                            location=c(7.1,50.8))
 
-# use the counter to modify a variable
+# download weather data for Cologne/Bonn airport and convert it to chillR format
+Bonn_weather <- handle_gsod(action = "download_weather",
+                            location = station_list$chillR_code[1],
+                            time_interval = c(1973,2019)) %>%
+  handle_gsod()
 
-for (i in 1:3)
-{
-  if (i == 1) addition <- 1
-  addition <- addition + i
-  print(addition)
-}
+# check record for missing data
+fix_weather(Bonn_weather$`KOLN BONN`)$QC
 
-# use the counter in a more creative way
-names <- c("Jacqueline", "Ola", "Lars")
+# (incidentally almost all gaps are for years covered by the KA_weather dataset)
+Bonn_patched <- patch_daily_temperatures(
+  weather = Bonn_weather$`KOLN BONN`,
+  patch_weather = list(KA_weather))
 
-for (i in 1:3)
-{
-  print(paste("Hello", names[i]))
-}
+fix_weather(Bonn_patched)$QC
 
-# use a vector of character strings to define iterations
-for (name in c("Jacqueline", "Ola", "Lars"))
-{
-  print(paste("Hello", name))
-}
+# There are still 4 days missing here, out of 47 years -
+# let's simply interpolate these gaps now
+
+Bonn<-fix_weather(Bonn_patched)
+
+Bonn_temps<-Bonn$weather
+
+
+scenario_1980 <- temperature_scenario_from_records(weather = Bonn_temps,
+                                                   year = 1980)
+
+scenario_1980$'1980'$data
+scenario_1980
+str(scenario_1980)
+
+
+temps_1980 <- temperature_generation(weather = Bonn_temps,
+                                     years = c(1973, 2019),
+                                     sim_years = c(2001, 2100),
+                                     temperature_scenario = scenario_1980)
+
+scenario_1996 <- temperature_scenario_from_records(weather = Bonn_temps,
+                                                   year = 1996)
+scenario_1996$'1996'$data
+scenario_1996
+str(scenario_1996)
+
+relative_scenario <- temperature_scenario_baseline_adjustment(
+  baseline = scenario_1996,
+  temperature_scenario = scenario_1980)
 
 
 
-# while loops
-cond <- 5
-
-while (cond < 6)
-{
-  print(cond)
-  cond <- cond - 1
-}
+temps_1980 <- temperature_generation(weather = Bonn_temps,
+                                     years = c(1973, 2019),
+                                     sim_years = c(2001, 2100),
+                                     temperature_scenario = relative_scenario)
 
 
 
-# the apply function family
 
-func <- function(x)  x + 1
+all_past_scenarios <- temperature_scenario_from_records(
+  weather = Bonn_temps,
+  year = c(1980,
+           1990,
+           2000,
+           2010))
 
-1:5
+adjusted_scenarios <- temperature_scenario_baseline_adjustment(
+  baseline = scenario_1996,
+  temperature_scenario = all_past_scenarios)
 
-sa <- sapply(1:5, func)
+```{r, eval=FALSE}
 
-for (i in 1:1000000) print(i + 1)
+all_past_scenario_temps <- temperature_generation(
+  weather = Bonn_temps,
+  years = c(1973,2019),
+  sim_years = c(2001,2100),
+  temperature_scenario = adjusted_scenarios)
 
-sapply(1:1000000, func)
+```
+```{r, eval=FALSE, echo=FALSE}
 
-sa <- sapply(list(1:5), func)
+save_temperature_scenarios(all_past_scenario_temps,"data","all_past_temps")
+```
+
+```{r, echo=FALSE}
+
+all_past_scenario_temps <- load_temperature_scenarios("data","all_past_temps")
+```
+
+frost_model <- function(x)
+  step_model(x,
+             data.frame(
+               lower=c(-1000, 0),
+               upper=c(0, 1000),
+               weight=c(1, 0)))
+
+models <- list(Chill_Portions = Dynamic_Model,
+               GDH = GDH,
+               Frost_H = frost_model)
 
 
 
-lapply(1:5, func)
 
 
 
-la<-lapply(list(1:5), func)
+chill_hist_scenario_list <- tempResponse_daily_list(all_past_scenario_temps,
+                                                    latitude = 50.9,
+                                                    Start_JDay = 305,
+                                                    End_JDay = 59,
+                                                    models = models)
 
 
 
-mat <- matrix(c(1,1,1,2,2,2,3,3,3),
-              c(3,3))
+scenarios <- names(chill_hist_scenario_list)[1:4]
 
-mat
 
-apply(mat, MARGIN=1, sum) # adding up all the data in each row
+all_scenarios <- chill_hist_scenario_list[[scenarios[1]]] %>%
+  mutate(scenario = as.numeric(scenarios[1]))
 
-apply(mat, MARGIN=2, sum) # adding up all the data in each column
 
-apply(mat, MARGIN=2, mean)
-KAw
+for (sc in scenarios[2:4])
+ all_scenarios <- all_scenarios %>%
+  rbind(chill_hist_scenario_list[[sc]] %>%
+          cbind(
+            scenario=as.numeric(sc))
+        ) %>%
+  filter(Perc_complete == 100)
 
-for (i in 0:23)
-  {KAhour <- KAw %>% mutate(Hour = i,
-                            Temp = NA)
-   if(i == 6) KAhour <- KAhour %>% mutate(Temp = Tmin)
-   if(i == 18) KAhour <- KAhour %>% mutate(Temp = Tmax)
-   
-   if(i == 0) KAhourly <- KAhour else
-     KAhourly <- rbind(KAhourly, KAhour)
-}
- KAhourly <- KAhourly %>% arrange(Year, Month, Day, Hour)
- 
- KAhourly$Temp <- interpolate_gaps(KAhourly$Temp)$interp
- 
- plot(KAhourly$Temp)
+# Let's compute the actual 'observed' chill for comparison
+actual_chill <- tempResponse_daily_list(Bonn_temps,
+                                        latitude = 50.9,
+                                        Start_JDay = 305,
+                                        End_JDay = 59,
+                                        models)[[1]] %>%
+  filter(Perc_complete == 100)
+
+ggplot(data = all_scenarios,
+       aes(scenario,
+           Chill_Portions,
+           fill = factor(scenario))) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  ylab("Chill accumulation (Chill Portions)") +
+  xlab("Scenario year") +
+  theme_bw(base_size = 10) +
+  ylim(c(0,90)) +
+  geom_point(data = actual_chill,
+             aes(End_year,
+                 Chill_Portions,
+                 fill = "blue"),
+             col = "blue",
+             show.legend = FALSE) +
+  scale_fill_discrete(name = "Scenario",
+                      breaks = unique(all_scenarios$scenario)) 
+
+
+temperature_means <- 
+  data.frame(Year = min(Bonn_temps$Year):max(Bonn_temps$Year),
+             Tmin = aggregate(Bonn_temps$Tmin,
+                              FUN = "mean",
+                              by = list(Bonn_temps$Year))[,2],
+             Tmax=aggregate(Bonn_temps$Tmax,
+                            FUN = "mean",
+                            by = list(Bonn_temps$Year))[,2]) %>%
+  mutate(runn_mean_Tmin = runn_mean(Tmin,15),
+         runn_mean_Tmax = runn_mean(Tmax,15))
+
+
+Tmin_regression <- lm(Tmin ~ Year,
+                      temperature_means)
+
+Tmax_regression <- lm(Tmax ~ Year,
+                      temperature_means)
+
+temperature_means <- temperature_means %>%
+  mutate(regression_Tmin = Tmin_regression$coefficients[1]+
+           Tmin_regression$coefficients[2]*temperature_means$Year,
+         regression_Tmax = Tmax_regression$coefficients[1]+
+           Tmax_regression$coefficients[2]*temperature_means$Year
+  )
+
+
+ggplot(temperature_means,
+       aes(Year,
+           Tmin)) + 
+  geom_point() + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                runn_mean_Tmin),
+            lwd = 2,
+            col = "blue") + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                regression_Tmin),
+            lwd = 2,
+            col = "red") +
+  theme_bw(base_size = 15) +
+  ylab("Mean monthly minimum temperature (°C)")
+
+ggplot(temperature_means,
+       aes(Year,
+           Tmax)) + 
+  geom_point() + 
+  geom_line(data = temperature_means,
+            aes(Year,
+                runn_mean_Tmax),
+            lwd = 2,
+            col = "blue") + 
+  geom_line(data = temperature_means,
+            aes(Year, 
+                regression_Tmax),
+            lwd = 2,
+            col = "red") +
+  theme_bw(base_size = 15) +
+  ylab("Mean monthly maximum temperature (°C)")
+
+
+save_temperature_scenarios(chill_hist_scenario_list, "data","Bonn_hist_chill_305_59")
+write.csv(actual_chill,"data/Bonn_observed_chill_305_59.csv", row.names = FALSE)
+write.csv(Bonn_temps,"data/Bonn_temps.csv")

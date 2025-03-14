@@ -12,21 +12,20 @@ output:
     number_sections: true
 ---
 
-# Making hourly temperatures
+# Chapter 08 Making hourly temperatures
 
-## Exercises
+1.  Choose a location of interest, find out its latitude and produce plots of daily sunrise, sunset and day length.
+    -   Location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
+    -   Bislich, 46487 Wesel
+    -   Latitude: 51°40'58.4"N Longitude: 6°29'46.4"E
 
-1. Choose a location of interest, find out its latitude and produce plots of daily sunrise, sunset and day length.
-- location of interest: Dairy farm with own fodder cultivation (belongs to my uncle)
-                        Bislich, 46487 Wesel
-- coordinates: latitude: 51°40'58.4"N
-               longitude: 6°29'46.4"E
-
-```{r}
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 require(chillR)
 require(ggplot2)
 require(tidyr)
+```
 
+```{r}
 Days_l8 <- daylength(latitude = 51.4, JDay = 1:365)
 Days_df_l8 <- data.frame(JDay = 1:365,
                          Sunrise = Days_l8$Sunrise,
@@ -43,15 +42,13 @@ ggplot(Days_df_l8, aes(JDay, value)) +
         theme_bw(base_size = 20)
 ```
 
-
-2. Produce an hourly dataset, based on idealized daily curves, for the KA_weather dataset (included in ChillR).
+2.  Produce an hourly dataset, based on idealized daily curves, for the KA_weather dataset (included in ChillR).
 
 ```{r}
-# KA_weather
 hourtemp_KA <- stack_hourly_temps(KA_weather, latitude=50.4)
 ```
 
-3. Produce empirical temperature curve parameters for the Winters_hours_gaps dataset, and use them to predict hourly values from daily temperatures (this is very similar to the example above, but please make sure you understand what's going on).
+3.  Produce empirical temperature curve parameters for the Winters_hours_gaps dataset, and use them to predict hourly values from daily temperatures (this is very similar to the example above, but please make sure you understand what's going on).
 
 ```{r}
 empi_curve_l8 <- Empirical_daily_temperature_curve(Winters_hours_gaps)
@@ -142,9 +139,4 @@ colnames(Winters_temps_to_plot_l8) <- c("DATE", "Method", "Temperature")
 
 ggplot(data = Winters_temps_to_plot_l8, aes(DATE, Temperature, colour = Method)) +
   geom_line(lwd = 1.3) + ylab("Temperature (°C)") + xlab("Date")
-
-
-
 ```
-
-

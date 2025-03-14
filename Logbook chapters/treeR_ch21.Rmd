@@ -1,0 +1,148 @@
+---
+title: "treeR_ch21"
+author: "Ricarda Scholte-Reh"
+date: "2024-10-12"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: false
+---
+
+# Chapter 21 Simple phenology analysis
+
+1.  Briefly explain why you shouldn’t take the results of a PLS regression analysis between temperature and phenology at face value. What do you need in addition in order to make sense of such outputs?
+
+    PLS is is a useful mining tool, but not a good analytical method on it's own, especially for small datasets. If there are only limited observations and a high variability, then the results can be misleading when the attempt of an interpretation is made. PLS should therefore always be used with a strong theoretical framework to validate or challenge existing knowledge about e.g. temperature responses.
+
+    Temperature data with a high amount of data (like daily or even hourly data) is a challenge, because the phenology data that it is compared with is very limited (e.g. one bloom date or period per year). Creating a statistical correlation between these two is rather difficult. The effects of temperature vary over time, and simple regression approaches often fail to capture these complexities. That is why PLS results should always be cross validated with other models or experimental data to ensure meaningful interpretations.
+
+2.  Replicate the PLS analysis for the Roter Boskoop dataset that you used in a previous lesson.
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
+library(chillR)
+library(ggplot2)
+library(patchwork)
+library(tidyverse)
+```
+
+```{r}
+Boskoop <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/data ch20-25/Roter_Boskoop_bloom_1958_2019.csv") %>%
+  select(Pheno_year, First_bloom) %>%
+  mutate(Year = as.numeric(substr(First_bloom, 1, 4)),
+         Month = as.numeric(substr(First_bloom, 5, 6)),
+         Day = as.numeric(substr(First_bloom, 7, 8))) %>%
+  make_JDay() %>%
+  select(Pheno_year, JDay) %>%
+  rename(Year = Pheno_year,
+         pheno = JDay)
+
+# head(Boskoop)
+
+KA_temps <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/data ch20-25/TMaxTMin1958-2019_patched.csv") %>%
+  make_JDay()
+
+# head(KA_temps)
+
+PLS_results <- PLS_pheno(KA_temps,
+                         Boskoop)
+
+# head(PLS_results$PLS_summary)
+```
+
+```{r}
+ggplot_PLS <- function(PLS_results)
+{
+  library(ggplot2)
+  PLS_gg <- PLS_results$PLS_summary %>%
+    mutate(Month = trunc(Date / 100),
+           Day = Date - Month * 100,
+           Date = NULL) 
+  
+  PLS_gg$Date <- ISOdate(2002, 
+                         PLS_gg$Month, 
+                         PLS_gg$Day)
+  
+  PLS_gg$Date[PLS_gg$JDay <= 0] <-
+    ISOdate(2001, 
+            PLS_gg$Month[PLS_gg$JDay <= 0], 
+            PLS_gg$Day[PLS_gg$JDay <= 0])
+  
+  PLS_gg <- PLS_gg %>%
+    mutate(VIP_importance = VIP >= 0.8,
+           VIP_Coeff = factor(sign(Coef) * VIP_importance))
+  
+  VIP_plot<- ggplot(PLS_gg,aes(x=Date,y=VIP)) +
+    geom_bar(stat='identity',aes(fill=VIP>0.8))
+  
+  VIP_plot <- VIP_plot +
+    scale_fill_manual(name="VIP", 
+                      labels = c("<0.8", ">0.8"), 
+                      values = c("FALSE" = "grey", 
+                                 "TRUE" = "blue")) +
+    theme_bw(base_size=15) +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.x = element_blank())
+  
+  coeff_plot <- ggplot(PLS_gg,
+                       aes(x = Date,
+                           y = Coef)) +
+    geom_bar(stat ='identity',
+             aes(fill = VIP_Coeff)) +
+    scale_fill_manual(name = "Effect direction", 
+                      labels = c("Advancing",
+                                 "Unimportant",
+                                 "Delaying"), 
+                      values = c("-1" = "red", 
+                                 "0" = "grey",
+                                 "1" = "dark green")) +
+    theme_bw(base_size = 15) +
+    ylab("PLS coefficient") +
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.x = element_blank())
+  
+  temp_plot <- ggplot(PLS_gg) +
+    geom_ribbon(aes(x = Date,
+                    ymin = Tmean - Tstdev,
+                    ymax = Tmean + Tstdev),
+                fill = "grey") +
+    geom_ribbon(aes(x = Date,
+                    ymin = Tmean - Tstdev * (VIP_Coeff == -1),
+                    ymax = Tmean + Tstdev * (VIP_Coeff == -1)),
+                fill = "red") +
+    geom_ribbon(aes(x = Date,
+                    ymin = Tmean - Tstdev * (VIP_Coeff == 1),
+                    ymax = Tmean + Tstdev * (VIP_Coeff == 1)),
+                fill = "dark green") +
+    geom_line(aes(x = Date,
+                  y = Tmean)) +
+    theme_bw(base_size = 15) +
+    ylab(expression(paste(T[mean]," (°C)")))
+  
+  library(patchwork)
+  
+  plot<- (VIP_plot +
+            coeff_plot +
+            temp_plot +
+            plot_layout(ncol=1,
+                        guides = "collect")
+          ) & theme(legend.position = "right",
+                    legend.text = element_text(size = 8),
+                    legend.title = element_text(size = 10),
+                    axis.title.x = element_blank())
+  
+  plot}
+
+ggplot_PLS(PLS_results)
+```
+
+3.  Write down your thoughts on why we’re not seeing the temperature response pattern we may have expected. What happened to the chill response?
+
+    The expected chilling response is unclear in the PLS analysis, possibly because of some data limitations, overlapping chilling and forcing phases, or the chosen analysis parameters. Chilling accumulates over an extended period of time, and the model may not fully capture this dynamic. Also the smoothing effect of the 11-day running mean or an incorrect start date for the phenological year might also hide some chilling signals.
+
+    Additionally, environmental factors beyond temperature, such as photoperiod or soil moisture, could influence the plants but these are not included as an influence in the model.

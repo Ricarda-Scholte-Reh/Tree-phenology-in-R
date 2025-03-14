@@ -12,21 +12,18 @@ output:
     number_sections: true
 ---
 
-hier gibt es schöne Grafiken zu den verschiedenen Klimaszenarien:
-https://www.dwd.de/DE/klimaumwelt/klimawandel/klimawandel_node.html
+# Chapter 16 Making CMIP6 scenarios
 
-# Making CMIP6 scenarios
-
-## Exercise
 1. Analyse the historic and future impact of climate change on two agroclimatic metrics of your choice, for the location you've chosen for your earlier analyses.
-```{r}
-#rm(list=ls()) # clears the environment from unwanted values etc.
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(tidyverse)
 library(ggplot2)
 library(tibble)
 library(magrittr)
+```
 
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 location = c(6.29, 51.40)
 area <- c(52.5, 5, 50.5, 7)
 
@@ -39,8 +36,9 @@ download_cmip6_ecmwfr(
   variable = c('Tmin', 'Tmax'),
   year_start = 2015,
   year_end = 2100)
+```
 
-
+```{r, eval = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 download_baseline_cmip6_ecmwfr(
   area = area,
   key = '9d522e37-4b90-46d1-8701-7deadd45032b',
@@ -50,11 +48,10 @@ download_baseline_cmip6_ecmwfr(
   year_start = 1986,
   year_end = 2014,
   month = 1:12)
-
 ```
 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(ncdf4)
 library(PCICt)
 Wesel_temps <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv")
@@ -66,9 +63,7 @@ station <- data.frame(
 
 extracted <- extract_cmip6_data(stations = station)
 
-head(extracted$`ssp126_AWI-CM-1-1-MR`)
-
-
+# head(extracted$`ssp126_AWI-CM-1-1-MR`)
 
 change_scenarios <- 
   gen_rel_change_scenario(extracted,
@@ -79,7 +74,9 @@ head(change_scenarios)
 
 
 write.csv(change_scenarios, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/all_change_scenarios_ssp126.csv", row.names = FALSE)
+```
 
+```{r}
 change_scenarios <- read.csv("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/all_change_scenarios_ssp126.csv")
 
 
@@ -87,24 +84,21 @@ scen_list <- convert_scen_information(change_scenarios)
 
 scen_frame <- convert_scen_information(scen_list)
 
-scen_list$"ARCEN AWS"$ssp126$`ACCESS-CM2`$'2050'
+# scen_list$"ARCEN AWS"$ssp126$`ACCESS-CM2`$'2050'
 ```
 
 
 ```{r}
-temps_1996 <- temperature_scenario_from_records(Wesel_temps,
-                                                1996)
+temps_2005 <- temperature_scenario_from_records(Wesel_temps,
+                                                2005)
 temps_2000 <- temperature_scenario_from_records(Wesel_temps,
                                                 2000)
-temps_1996
-temps_2000
+# temps_2005
+# temps_2000
 
-
-base <- temperature_scenario_baseline_adjustment(temps_1996,
+# Wesel_temps
+base <- temperature_scenario_baseline_adjustment(temps_2005,
                                                  temps_2000)
-
-base
-
 
 scen_list <- convert_scen_information(change_scenarios,
                                       give_structure = FALSE)
@@ -113,32 +107,32 @@ adjusted_list <- temperature_scenario_baseline_adjustment(base,
                                                           scen_list,
                    temperature_check_args = 
                      list(scenario_check_thresholds = c(-5, 15)))
+```
 
-
+```{r, eval = FALSE}
 temps <- temperature_generation(Wesel_temps,
-                                years = c(1996, 2019),
+                                years = c(1990, 2020),
                                 sim_years = c(2001, 2100),
                                 adjusted_list,  
                                 temperature_check_args = 
-                                list( scenario_check_thresholds = c(-5, 15)))
+                                  list( scenario_check_thresholds = c(-5, 15)))
 
-save_temperature_scenarios(temps,
-                           "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate", 
-                           "Wesel_future")
+save_temperature_scenarios(temps, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate", "Wesel_future")
+```
 
-
+```{r}
 for(scen in 1:length(adjusted_list))
 {
   if(!file.exists(paste0("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate/Wesel_future_",
                        scen,"_",
                        names(adjusted_list)[scen],".csv")) )
   {temp_temp <- temperature_generation(Wesel_temps,
-                                   years = c(1994, 2020),
+                                   years = c(1990, 2020),
                                    sim_years = c(2001, 2100),
                                    adjusted_list[scen],  
                                    temperature_check_args = 
                                      list( scenario_check_thresholds = c(-5, 15)))
-  write.csv(temp_temp[[1]],paste0("data/future_climate2/Bonn_future_",scen,"_",names(adjusted_list)[scen],".csv"),
+  write.csv(temp_temp[[1]],paste0("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate/Wesel_future_",scen,"_",names(adjusted_list)[scen],".csv"),
                              row.names=FALSE)
   print(paste("Processed object",scen,"of", length(adjusted_list)))
   
@@ -147,11 +141,10 @@ for(scen in 1:length(adjusted_list))
   
 }
 
+```
 
-
-temps <- load_temperature_scenarios("data/future_climate","Bonn_future_")
-
-# now we have temperature scenarios
+```{r}
+temps <- load_temperature_scenarios("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate", "Wesel_future_")
 
 frost_model <- function(x)
   step_model(x,
@@ -163,12 +156,12 @@ frost_model <- function(x)
 models <- list(Chill_Portions = Dynamic_Model,
                GDH = GDH,
                Frost_H = frost_model)
+```
 
-
-
+```{r, eval = FALSE}
 chill_future_scenario_list <- 
   tempResponse_daily_list(temps,
-                          latitude = 50.8,
+                          latitude = 51.4,
                           Start_JDay = 305,
                           End_JDay = 59,
                           models = models)
@@ -179,17 +172,8 @@ chill_future_scenario_list <-
            filter(Perc_complete == 100))
 
 save_temperature_scenarios(chill_future_scenario_list,
-                           "data/future_climate",
-                           "Bonn_futurechill")
-
-# this would be for spring frost, but we're not running this
-chill_future_scenario_list_frost <- 
-  tempResponse_daily_list(temps,
-                          latitude = 50.8,
-                          Start_JDay = 75,
-                          End_JDay = 120,
-                          models = list(GDH = GDH,
-                                        Frost_H = frost_model))
+                           "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate",
+                           "Wesel_futurechill")
 
 chill_future_scenario_list_frost <- 
   lapply(chill_future_scenario_list_frost,
@@ -198,20 +182,15 @@ chill_future_scenario_list_frost <-
 
 
 save_temperature_scenarios(chill_future_scenario_list_frost,
-                           "data/future_climate",
-                           "Bonn_futurefrost")
+                           "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate",
+                           "Wesel_futurefrost")
+```
 
-# now we should all the agroclimatic metrics
+```{r}
+Wesel_temps <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/patched_weather_3_Wesel.csv")
 
-# THIS IS WHERE WE LEFT OFF ON 19th NOVEMBER
-
-
-# simulate for the observed record
-
-Bonn_temps <- read_tab("data/Bonn_temps.csv")
-
-observed_chill <- tempResponse_daily_list(Bonn_temps,
-                                          latitude = 50.8,
+observed_chill <- tempResponse_daily_list(Wesel_temps,
+                                          latitude = 51.4,
                                           Start_JDay = 305,
                                           End_JDay = 59,
                                           models = models)
@@ -219,16 +198,15 @@ observed_chill <- lapply(observed_chill,
                          function(x) x %>%
                            filter(Perc_complete == 100))
 
-write.csv(observed_chill, "data/Bonn_observed_chill_305_59.csv")
-
-# simulate chill for historic scenarios
-
-hist_temps <- load_temperature_scenarios("data","all_past_temps")
+write.csv(observed_chill, "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_observed_chill_305_59.csv")
+```
 
 
+```{r, eval = FALSE}
+hist_temps <- load_temperature_scenarios("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters", "Wesel_hist_chill_")
 
 chill_hist_scenario_list <- tempResponse_daily_list(hist_temps,
-                                          latitude = 50.8,
+                                          latitude = 51.4,
                                           Start_JDay = 305,
                                           End_JDay = 59,
                                           models = models)
@@ -238,18 +216,18 @@ chill_hist_scenario_list <- lapply(chill_hist_scenario_list,
                                        filter(Perc_complete == 100))
 
 
-
 save_temperature_scenarios(chill_hist_scenario_list,
-                           "data/future_climate",
-                           "Bonn_hist_chill_305_59")
+                           "D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate",
+                           "Wesel_hist_chill_305_59")
+```
 
 
-chill_future_scenario_list <- load_temperature_scenarios("data/future_climate","Bonn_futurechill")
-chill_hist_scenario_list<-load_temperature_scenarios("data","Bonn_hist_chill_305_59")
-observed_chill <- read_tab("data/Bonn_observed_chill_305_59.csv")
+```{r, message = FALSE, warning = FALSE}
+chill_future_scenario_list <- load_temperature_scenarios("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/future_climate", "Wesel_futurechill")
 
+chill_hist_scenario_list<-load_temperature_scenarios("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters", "Wesel_hist_chill_305_59")
 
-# prepare for plotting
+observed_chill <- read_tab("D:/! Ricardas Daten/Studium/Master/03. Semester (WiSe 24-25)/Tree phenology analysis in R/Logbook chapters/Wesel_observed_chill_305_59.csv")
 
 chills <- make_climate_scenario(
   metric_summary = chill_hist_scenario_list,
@@ -261,7 +239,6 @@ plot_climate_scenarios(
   climate_scenario_list = chills,
   metric = "Chill_Portions",
   metric_label = "Chill (Chill Portions)")
-
 
 
 list_ssp <- 
@@ -303,8 +280,6 @@ for(SSP in SSPs)
                     Time),
         add_to = chills)
 }
-
-
 
 info_chill <-
   plot_climate_scenarios(

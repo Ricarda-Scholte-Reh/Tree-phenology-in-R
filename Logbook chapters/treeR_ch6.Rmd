@@ -12,19 +12,19 @@ output:
     number_sections: true
 ---
 
-# Manual chill analysis
-
-## Exercises
+# Chapter 06 Manual chill analysis
 
 1.  Write a basic function that calculates warm hours (\>25° C).
-Basis structure:
-> # read in Dataset
-> dataset[ , new_column_name] <- dataset$temperature_column > 25
 
-2.  Apply this function to the Winters_hours_gaps dataset
+    -   Basic structure:
 
-```{r}
-# rm(list=ls()) # clears the environment from unwanted values etc.
+        -   \# read in Dataset (e.g. Winters_hours_gaps)
+
+        -   dataset[ , new_column_name] \<- dataset\$temperature_column \> 25
+
+2.  Apply this function to the Winters_hours_gaps dataset.
+
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(knitr)
 library(pander)
@@ -39,6 +39,7 @@ hourtemps[ , "warm_hour"] <- hourtemps$Temp > 25
 
 hourtemps[2503:2507, ]
 ```
+
 3.  Extend this function, so that it can take start and end dates as inputs and sums up warm hours between these dates.
 
 ```{r}
@@ -52,8 +53,8 @@ End_date <- which(hourtemps$Year == 2008 &
                     hourtemps$Day == 30 &
                     hourtemps$Hour ==12)
 sum(hourtemps$warm_hour[Start_Date:End_date])
-# The result is 250 and will be the controll for the following function with the same start and end
 
+# The result is 250 and will be the control for the following function with the same start and end
 
 sum_warmH <- function(WHourly, 
                         startYear,
@@ -89,6 +90,3 @@ sum_warmH(hourtemps,
            endDay = 30,
            endHour = 12)
 ```
-
-
-

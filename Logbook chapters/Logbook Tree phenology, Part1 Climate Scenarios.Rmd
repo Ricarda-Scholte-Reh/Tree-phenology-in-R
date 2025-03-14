@@ -1,0 +1,232 @@
+---
+title: "Tree phenology analysis with R, Part 1 Climate Scenarios"
+author: "Ricarda Scholte-Reh"
+date: "2025-03-04"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: false
+---
+
+This logbook will answer the Exercises of the module "Tree phenology analysis in R". It will start with chapter 3, ends with chapter 35 and will only shortly tell if a chapter is left out (like chapter 17).\
+The logbook is split into the following 3 parts, Climate Scenarios (chapter 3-19), PLS regression (chapter 20-28) and the phenoFlex model (chapter 29-35).
+
+This is part 1 about climate scenarios.
+
+# Chapter 03 Tree dormancy
+
+1.  Put yourself in the place of a breeder who wants to calculate the temperature requirements of a newly released cultivar. Which method will you use to calculate the chilling and forcing periods?\
+
+    -   Because the cultivar is already released there should be official data about the cultivar. Therefore I would use these data to calculate the temperature requirements. As base data I need the long phenological data sets and temperature records. With these I can calculate finally the date of dormancy overcome.\
+
+2.  Which are the advantages (name 2) of the BBCH scale compared with early scales?
+
+    -   Growth stages are easily recognizable under field conditions.
+
+    -   Growth stages are graded in the order of appearance.
+
+3.  Classify the following phenological stages of sweet cherry according to the BBCH scale.
+
+    The pictures are described from left to right. All of the classifications are based on the given pictures and I assume that the image section shown corresponds to the most represented of the tree.
+
+    -   Picture 1: BBCH-stage 03
+        -   Main stage: 00: sprouting
+        -   Stage 03: end of the bud swelling (leave buds), parts of the buds are light green, the bud scales are spread apart
+    -   Picture 2: BBCH-stage 65
+        -   Main stage 60: Flowering
+        -   Stage 65: Full flowering, at least 50 % of the flowers are open, the first petals are already falling.
+    -   Picture 3: BBCH-stage: 86
+        -   Main stage 80: ripening or maturity
+        -   Stage 85: Coloring advanced (The color is too light to be ripe but is clearly advanced).
+
+![phenological stages of cherry](https://hortibonn.github.io/Tree-Phenology/pictures/pheno_stages.png) Picture 01: Phenological stages of a cherry tree\
+
+# Chapter 04 Climate change and impact projection
+
+1.  List the main drivers of climate change at the decade to century scale, and briefly explain the mechanism through which the currently most important driver affects our climate.
+    -   Main drivers of climate change (influence from decade to century scale)
+        -   Greenhouse gases
+        -   Aerosols
+        -   Clouds
+        -   Surface albedo
+        -   Ozone
+        -   Sun
+        -   Long-term drivers
+    -   Currently most important for the climate are greenhouse gases and their increasing amount in the atmosphere
+        -   The reason are mainly human activities like deforestation, fossil fuel combustion and industrial processes
+
+        -   Greenhouse gases trap heat in the atmosphere
+
+        -   Can absorb only radiation of certain wavelengths
+
+        -   Short-wave radiation from Earth surface is absorbed
+2.  Explain briefly what is special about temperature dynamics of recent decades, and why we have good reasons to be concerned.
+    -   Recently the mean temperatures are globally rising clearly and very drastically
+
+    -   Especially in the last 50 to 100 years
+
+    -   This an other factors have a great influence in our climate and weather (regional and global)
+
+    -   We will and already do experience more extreme weather (like more dry periods, extreme rain, especially mild and extreme winter)
+
+    -   Most important is the rapid warming (as conclusion)
+3.  What does the abbreviation 'RCP' stand for, how are RCPs defined, and what is their role in projecting future climates?
+    -   RCP -\> Representative Concentration Pathways
+
+    -   RCPs project future greenhouse gas concentrations (NOT emissions) based on different climate change scenarios until the year 2100
+
+    -   The different scenarios are labeled after the possible radioative forcing values in the year 2100
+4.  Briefly describe the 4 climate impact projection methods described in the fourth video.
+    -   Statistical models
+        -   Analyzes relationships between species occurrences and environmental factors to predict distributions. Often based on historical data.
+        -   Does not account for ecological interactions or future adaptability.
+    -   Species distribution modeling
+        -   Uses species presence/absence data and environmental variables to estimate potential distributions under current and future climates.
+        -   Assumes species are in equilibrium with their environment, which may hold under climate change.
+    -   Process-based models.
+        -   Simulate biological and ecological processes (e.g. metabolism, reproduction) to predict species and ecosystem responses.
+        -   Requires extensive species-specific data and is computationally demanding.
+    -   Climate analogue analysis
+        -   Identifies regions where current conditions resemble projected future climates to predict potential species shifts.
+
+        -   Does not consider non-climatic factors (e.g. land use, human impact) that influence species survival.
+
+# Chapter 05 Winter chill projections
+
+1.  Sketch out three data access and processing challenges that had to be overcome in order to produce chill projections with state-of-the-art methodology.
+    -   Climate Data Acquisition
+        -   Climate datasets come from multiple sources, such as meteorological stations, reanalysis datasets and climate models.
+        -   Differences in spatial and temporal resolution require preprocessing to ensure consistency.
+        -   Missing data and measurement errors need handling to avoid distortions in projections.
+    -   Model Selection and Calibration
+        -   Multiple winter chill models exist (e.g. Chill Hours, Utah Model, Dynamic Model) each responding differently to temperature variations.
+        -   Choosing the most appropriate model for a specific region is crucial, as different tree species have varying chill requirements.
+        -   Calibration is needed to align models with observed historical data and improve predictive accuracy.
+    -   Uncertainty and Bias Correction
+        -   Climate models often introduce biases that must be corrected before using their projections.
+
+        -   Different greenhouse gas emission scenarios (e.g. RCP2.6, RCP4.5, RCP8.5) result in a range of possible future conditions, adding uncertainty.
+
+        -   Statistical methods, such as ensemble modeling and probabilistic approaches, help quantify and communicate these uncertainties.
+2.  Outline, in your understanding, the basic steps that are necessary to make such projections.
+    1.  Data collection and Preprocessing
+
+        -   Gather historical temperature records and future climate projections from global and regional sources.
+        -   Standardize the data sets by converting them into compatible formats and resolutions.
+        -   Fill in missing data and remove inconsistencies that could affect model accuracy.
+
+    2.  Chill Model Application
+
+        -   Apply a chosen winter chill model to calculate chill accumulation over time.
+        -   Compare results from different models to understand their variability and sensitivity.
+        -   Validate model outputs against historical observations to ensure reliability.
+
+    3.  Climate Scenario Analysis
+
+        -   Run chill models using projected temperature data under different climate change scenarios.
+        -   Analyse how winter chill accumulation might shift in various regions over time.
+        -   Compare results across different periods (e.g. near-future vs. late-century) to assess long-term trends.
+
+    4.  Validation and Uncertainty Assessment
+
+        -   Compare modeled projections with historical observations to evaluate accuracy.
+
+        -   Apply statistical techniques to quantify uncertainties and assess model reliability.
+
+        -   Use ensemble approaches to minimize errors and account for variability between models.
+
+    5.  Visualization and Interpretation
+
+        -   Present results using graphs, maps, and reports for easy interpretation.
+
+        -   Provide insights for stakeholders, such as farmers and policymakers, to support decision-making.
+
+        -   Communicate potential risks and adaptation strategies based on projected changes.
+
+```{r child = 'treeR_ch6.Rmd'}
+
+```
+
+```{r child = 'treeR_ch7.Rmd'}
+
+```
+
+```{r child = 'treeR_ch8.Rmd'}
+
+```
+
+```{r child = 'treeR_ch9.Rmd'}
+
+```
+
+```{r child = 'treeR_ch10.Rmd'}
+
+```
+
+```{r child = 'treeR_ch11.Rmd'}
+
+```
+
+```{r child = 'treeR_ch12.Rmd'}
+
+```
+
+# Chapter 13 Saving and loading data (and hiding this in markdown)
+
+There are no tasks for this chapter.
+
+```{r child = 'treeR_ch14.Rmd'}
+
+```
+
+# Chapter 15 Future temperature scenarios
+
+1.  Briefly describe the differences between the RCPs and the SSPs (you may have to follow some of the links provided above).
+
+The main differences between RCPs (Representative Concentration Pathways) ans SSPs (Shared Socioeconomic Pathways) are the following:
+
+-   Focus
+
+    -   RCPs are defined through greenhouse gas concentrations and radioactive forcing levels
+
+    -   SSPs include socioeconomic factors (e.g. population growth, energy use, policy decisions) along with emissions pathways
+
+-   Drivers of Change
+
+    -   RCPs only consider atmospheric greenhouse gas concentrations and their effects on climate
+
+    -   SSPs include also social, economic and technological factors that influence emissions
+
+-   Policy Relevance
+
+    -   RCPs provide no direct link to human actions or policy decisions
+
+    -   SSPs offer insights into how different societal choices impact climate change
+
+-   Emissions Pathway Representation
+
+    -   RCPs directly define future greenhouse gas concentration levels
+
+    -   SSPs can be paired with radioactive forcing levels for more flexibility
+
+-   RCPs are considered now as outdated and SSPs are now mainly used
+
+```{r child = 'treeR_ch16.Rmd'}
+
+```
+
+# Chapter 17 Making CMIP5 scenarios with the ClimateWizard
+
+There are no tasks for this chapter.
+
+```{r child = 'treeR_ch18.Rmd'}
+
+```
+
+```{r child = 'treeR_ch19.Rmd'}
+
+```

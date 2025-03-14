@@ -12,20 +12,19 @@ output:
     number_sections: true
 ---
 
-# Chill models
+# Chapter 07 Chill models
 
-## Exercises
+1.  Run the "chilling()" function on the Winters_hours_gap dataset.
 
-1. Run the "chilling()" function on the Winters_hours_gap dataset.
-```{r}
-# rm(list=ls()) # clears the environment from unwanted values etc.
+```{r, echo = FALSE, results = 'hide', message = FALSE, warning = FALSE}
 library(chillR)
 library(knitr)
 library(pander)
 library(kableExtra)
+```
 
+```{r}
 hourtemps <- Winters_hours_gaps[ , c("Year", "Month", "Day", "Hour", "Temp")]
-?chilling
 
 chilling_l7 <- chilling(make_JDay(hourtemps),
                    Start_JDay = 90,
@@ -33,15 +32,18 @@ chilling_l7 <- chilling(make_JDay(hourtemps),
 chilling_l7
 ```
 
-2. Create your own temperature-weighting chill model using the "step_model()" function.
-3. Run this model on the Winters_hours_gap dataset using the "tempResponse()" function.
+2.  Create your own temperature-weighting chill model using the "step_model()" function.
 
 ```{r}
 df_l7 = data.frame(
   lower = c(-1000, 1, 2, 3, 4, 5, 6),
   upper = c(    1, 2, 3, 4, 5, 6, 1000),
   weight = c(   0, 1, 2, 3, 2, 1, 0))
+```
 
+3.  Run this model on the Winters_hours_gap dataset using the "tempResponse()" function.
+
+```{r}
 step_model_l7 <- step_model(HourTemp=hourtemps$Temp, df=df_l7)
 
 TResp_l7 <- tempResponse(make_JDay(hourtemps),
@@ -51,5 +53,3 @@ TResp_l7 <- tempResponse(make_JDay(hourtemps),
                                        GDH = GDH))
 TResp_l7
 ```
-GDH = Growing Degree Days
-

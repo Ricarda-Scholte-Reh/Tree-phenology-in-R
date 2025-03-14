@@ -1,0 +1,134 @@
+---
+title: "Tree phenology, Part 2 PLS regression"
+author: "Ricarda Scholte-Reh"
+date: "2025-03-04"
+homepage: "https://Ricarda-Scholte-Reh.github.io"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    number_sections: false
+---
+
+This logbook will answer the Exercises of the module "Tree phenology analysis in R". It will start with chapter 3, ends with chapter 35 and will only shortly tell if a chapter is left out (like chapter 17).\
+The logbook is split into the following 3 parts, Climate Scenarios (chapter 3-19), PLS regression (chapter 20-28) and the phenoFlex model (chapter 29-35).
+
+This is part 2 about PLS regression.
+
+# Chapter 20 Simple phenology analysis
+
+1.  Provide a brief narrative describing what p-hacking is, and why this is a problematic approach to data analysis.
+
+    -   p-hacking
+
+        Is a manipulative approach to data analysis aimed at achieving statistically significant results. Common techniques include selective reporting, cherry-picking variables, or running multiple tests until the p-value falls below 0.05.
+
+    -   Problems
+
+        It increases false positive results which can create misleading conclusions. It also undermines scientific integrity and makes it impossible or very difficult to reproduce results. Additionally, it encourages to only publish "positive" results. All this leads to wasting resources, it can mislead future research and it lowers the public trust in science.
+
+2.  Provide a sketch of your casual understanding of the relationship between temperature and bloom dates.
+
+    Warmer winter and spring temperatures generally lead to earlier bloom dates. Plants require a certain amount of warmth (growing degree days) to sprout in spring. However, they also need a period of cold (chilling requirement) to properly transition into growth.
+
+    Some species need a specific number of cold days in winter before they can respond to warmth. After meeting the chilling requirement, plants need sufficient warmth to trigger blooming. If one requirement isn't met the plant may fail to bloom or show reduced productivity.
+
+3.  What do we need to know to build a process-based model from this?
+
+    -   Key inputs
+
+        -   Temperature data (daily min/max, long-term trends)
+
+        -   Species-specific chilling and heat accumulation thresholds
+
+        -   Day length (photoperiod) for each day
+
+        -   Environmental factors influencing temperature (e.g., topography)
+
+    -   Model Structure
+
+        -   Accumulate chilling degree days from a defined starting point in autumn
+
+        -   After chilling requirements are met, track growing degree days
+
+        -   Link daily min/max temperatures with day length to estimate hourly temperature trends
+
+```{r child = 'treeR_ch21.Rmd'}
+
+```
+
+# Chapter 22 Successes and limitations of PLS regression analysis
+
+1.  Briefly explain in what climatic settings we can expect PLS regression to detect the chilling phase - and in what settings this probably wont work.
+
+    PLS would be able to detect the chilling phase in locations with mild winters where warm temperatures reduce the chill accumulation (like in California). In regions with colder winters (like Beijing, China) where a temperature change can increase and decrease chilling it is way more difficult for PLS to detect chilling phases. This is because if it gets too cold the chill accumulation stops and this creates a dynamic that a simple PLS can not detect.
+
+2.  How could we overcome this problem?
+
+    We could create a model that explicitly calculates the chill accumulation instead of an RLS or we apply alternative statistical methods that can capture the nonlinear relationship between chilling and the temperature.
+
+```{r child = 'treeR_ch23.Rmd'}
+
+```
+
+# Chapter 24 Examples of PLS regression with agroclimatic metrics
+
+1.  Look across all the PLS results presented above. Can you detect a pattern in where chilling and forcing periods delineated clearly, and where this attempt failed?
+
+    -   Chilling period
+
+        -   In warm climates like in Croatia or Tunisia is the chilling period is clearly visible.
+
+            -   The chilling period is only as long as it needs to be or sometimes even too short what makes it a lot easier to detect the chilling period.
+
+        -   In cold climates like in Beijing or even Klein-Altendorf is the chilling period not easy to detect.
+
+            -   The chilling period is longer than required, what makes it difficult to detect a clear chilling phase
+
+    -   Forcing period
+
+        -   It is easy to detect the forcing period in basically all climates.
+
+        -   This is probably do to the fact that the heat accumulation has a more direct influence on blooming than chilling.
+
+2.  Think about possible reasons for the success or failure of PLS based on agroclimatic metrics. Write down your thoughts.
+
+    -   Reasons for success
+
+        -   Detecting the two phases is easier in climates that have a clearer separation between the chilling and the forcing phase.
+
+        -   If the chilling requirements are just met then the response is clearer to detect.
+
+        -   The forcing period is nearly always good to detect because it has a more direct influence to blooming than chilling.
+
+        -   The choice of Chill model also has an influence on the results, a more simple model like Chilling Hours get less satisfying results than the Dynamic Model.
+
+    -   Reasons for failure
+
+        -   A rather cold climate with a longer chilling period and an overlapping chilling and forcing period is difficult to analyse with a PLS analysis.
+
+        -   PLS analysis assumes linear relationships, which may not capture the complex interactions between chilling, heat, and bloom timing. If only forcing period and blooming are viewed there is a more linear relationship that PLS can detect.
+
+```{r child = 'treeR_ch25.Rmd'}
+
+```
+
+```{r child = 'treeR_ch26.Rmd'}
+
+```
+
+# Chapter 27The relative importance of chill and heat
+
+1.  Describe the temperature response hypothesis outlined in this chapter.
+
+    The temperature response hypothesis explains how temperature influences tree phenology through chilling and forcing effects. Chilling temperatures are required to release bud dormancy and forcing temperatures to drive bud development and growth. The hypothesis examines how the balance between chilling and forcing temperatures determines the timing of phenological events. Tree species and even single varieties have specific needs in chilling and forcing to produce sufficient fruits.
+
+    In the graphic below is a representation how the relationship of chilling and forcing influences the bloom date of trees.
+
+![Graphical representation of the temperature response hypothesis](https://hortibonn.github.io/Tree-Phenology/pictures/temp_response_hypothesis.jpg){width="508"}
+
+# Chapter 28 Experimentally enhanced PLS
+
+There are no tasks for this chapter.
